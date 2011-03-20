@@ -1,0 +1,286 @@
+#!/usr/bin/perl
+
+# apt-repo -- Manipulate APT repository list
+# $Id: apt-repo,v 1.00 2011-03-15 15:02:07 cas Exp $
+
+# Copyright 2011 by Andrey Cherepanov (cas#altlinux.org)
+
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of GPL (see COPYING).
+
+=head1 NAME
+
+apt-repo -- Manipulate APT repository list
+
+=head1 SYNOPSIS
+
+ apt-repo [list] [-a]
+ apt-repo add [APT|URL|branch|task] [name or component]
+ apt-repo rm [APT|URL|branch|task] [name or component]
+ apt-repo update
+ apt-repo -h|--help
+ apt-repo -v|--version
+
+=head1 DESCRIPTION
+
+The apt-repo script allow to show, add and remove APT repositories specified
+by address in sources.list(5) format, URL with optional component, branch 
+name or task number.
+
+=head1 SEE ALSO
+
+L<sources.list(5)>, L<apt-cache(8)>, L<apt-get(5)>.
+
+=head1 AUTHORS
+
+ Andrey Cherepanov (cas#altlinux.org)
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2011 by Andrey Cherepanov (cas#altlinux.org)
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of GPL (see COPYING).
+
+=cut
+
+use strict;
+use warnings;
+
+use Pod::Usage qw(pod2usage);
+
+# Default parameters
+my $version = '1.0';
+my $type = 'rpm';
+my $c_branch = 'classic';
+my $c_task = 'task';
+my $noarch = 'noarch';
+
+my $cmd = 'list';
+
+$cmd = $ARGV[0] if scalar @ARGV > 0;
+
+# Get system arch
+my $arch = `/bin/uname -m`;
+# arch for x86_32
+$arch = 'i586' if $arch =~ /^i686$/;
+
+# Default repository pathes
+my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
+my $repo_task = 'http://git.altlinux.org/repo/';
+my $conf_main = '/etc/apt/sources.list';
+my $conf_list = '/etc/apt/sources.list.d/*.list';
+
+# Show usage information
+sub show_usage {
+	pod2usage (-verbose => 1, -exitval => 0);
+}
+
+# Show version
+sub show_version {
+	print "$version\n";
+	exit 0;
+}
+
+# Return list of repositories as text
+sub get_repos {
+	my $all = shift;
+	my @out = ();
+	my $output;
+
+	# Show all active repositories
+	open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)? '  $conf_main $conf_list";
+	@out = <P>;
+	close P;
+	$output = join( "", @out );
+
+	# On -a show all available commented repositories
+	if( defined $all and $all =~ /^-a$/ ) {
+		open P, '-|', "egrep -h '^[[:space:]]*#[[:space:]]*$type(-src|-dir)? '  $conf_main $conf_list";
+		@out = <P>;
+		close P;
+		$output .= join( "", @out );
+	}
+	
+	return $output;
+}
+
+# Show repositories
+sub show_repo {
+	shift;
+	my $all = shift;
+
+	print get_repos( $all );
+	
+	exit 0;
+}
+
+# Determine repository URL
+sub get_url {
+	my $repo   = shift;
+	my $object = shift;
+	my @url;
+	
+	defined $repo or die "Missing repository definition";
+	
+	# Branch 	
+	if( $repo =~ /^branch$/ and defined $object )  {
+		my $key = $object;
+
+		# Fix Sisyphus name
+		$object = 'Sisyphus' if $object =~ /^sisyphus$/;
+
+		# Fix key for Sisyphus
+		$key = 'alt' if $object =~ /^Sisyphus$/;
+
+		my $u = 'rpm [' . $key . '] ' . $repo_base . $object . '/branch';
+		return (
+			$u . ' ' . $arch . ' ' . $c_branch, 
+			$u . ' ' . $noarch . ' ' . $c_branch
+		       );
+	}
+
+	# Task
+	if( $repo =~ /^task$/ and defined $object ) {
+		return ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
+	}
+
+	# URL
+	if( $repo =~ /^(http|ftp|rsync|file|cdrom):\// ) {
+		my $u = 'rpm ' . $repo;
+		my $component = $c_branch;
+		
+		$component = $object if defined $object;
+
+		return (
+			$u . ' ' . $arch . ' ' . $component, 
+			$u . ' ' . $noarch . ' ' . $component
+		       );
+	}
+
+	# In format of sources.list(5)
+	if( $repo =~ /^$type(-src|-dir)? / ) {
+		return ( $repo );
+	}
+
+	return ();
+}
+
+# Add repository to list
+sub add_repo {
+	shift;
+	my $repo   = shift;
+	my $object = shift;
+	my $a_found;
+	my $i_found;
+
+	my @urls = get_url( $repo, $object );
+
+	if( scalar @urls == 0 ) {
+		print "Nothing to add: bad repository format. See -h for details.\n";
+		exit 1;
+	}
+
+	foreach my $u ( @urls ) {
+		$a_found = 0;
+		$i_found = 0;
+		
+		# Lookup active
+		foreach( split( /\n/, get_repos( '-a' ) ) ) {
+			# Check active
+			if( /^\Q$u\E$/ ) {
+				# This source is active 
+				$a_found = 1;
+				last;
+			}
+			# Check commented
+			if( /^[[:space:]]*#[[:space:]]*\Q$u\E$/ ) {
+				# This source is exist and commented
+				$i_found = 1;
+				last;
+			}
+		}
+
+		#print "$a_found $i_found $u\n";
+
+		# Process source
+		next if $a_found; # Source is active, nothing do
+
+		# Uncomment commented source
+		if( $i_found ) {
+			my $ur = quotemeta $u;
+			system "sed -i 's/^[[:space:]]*#[[:space:]]*\\($ur\\)\$/\\1/' $conf_main $conf_list";
+			next;
+		}
+
+		# Append to main sources list file
+		open CONFIG, '>>', "$conf_main" or die "Can't open $conf_main: $!";
+		print CONFIG $u . "\n";
+		close CONFIG;
+
+	}
+
+	exit 0;
+}
+
+# Remove repository from list
+sub rm_repo {
+	shift;
+	my $repo   = shift;
+	my $object = shift;
+	my $a_found;
+	my $i_found;
+
+	my @urls = get_url( $repo, $object );
+
+	if( scalar @urls == 0 ) {
+		print "Nothing to remove: bad repository format. See -h for details.\n";
+		exit 1;
+	}
+
+	foreach my $u ( @urls ) {
+		$a_found = 0;
+		$i_found = 0;
+		
+		# Lookup active
+		foreach( split( /\n/, get_repos() ) ) {
+			# Check active
+			if( /^\Q$u\E$/ ) {
+				# This source is active 
+				$a_found = 1;
+				last;
+			}
+		}
+
+		print "$a_found $u\n";
+
+		# Remove from $conf_main, comment in other files
+		if( $a_found ) {
+			$u = quotemeta $u;
+			#system "perl -pi -e 's/^[[:space:]]*\\Q$u\\E\$//m' $conf_main";
+			system "sed -i -e '/^[[:space:]]*$u\$/d' $conf_main";
+                        system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
+		}
+	}
+	exit 0;
+}
+
+# Update repo
+sub update_repo {
+	system 'apt-get update';
+	exit 0;
+}
+
+# Process command line arguments
+
+show_repo( @ARGV ) if $cmd =~ /^list$/;
+show_repo( 'list', '-a' ) if $cmd =~ /^-a$/;
+add_repo( @ARGV ) if $cmd =~ /^add$/;
+rm_repo( @ARGV ) if $cmd =~ /^rm$/;
+update_repo() if $cmd =~ /^update$/;
+show_usage() if $cmd =~ /-(h|-help)$/; 
+show_version() if $cmd =~ /-(v|-version)$/;
+show_usage();
+
+__END__
+

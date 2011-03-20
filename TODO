@@ -1,0 +1,7 @@
+- set proxy configuration for APT
+- colorize output
+- support mirrors
+- lookup best mirror
+- create local repository
+- support CD and DVD sources
+- l10n
