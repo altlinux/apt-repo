@@ -14,18 +14,65 @@ apt-repo -- Manipulate APT repository list
 
 =head1 SYNOPSIS
 
- apt-repo [list] [-a]
- apt-repo add [APT|URL|branch|task] [name or component]
- apt-repo rm [APT|URL|branch|task] [name or component]
- apt-repo update
- apt-repo -h|--help
- apt-repo -v|--version
+ apt-repo> [list] [-a]
+ apt-repo> add [APT|URL|branch|task] [name or component]
+ apt-repo> rm [APT|URL|branch|task] [name or component]
+ apt-repo> update
 
 =head1 DESCRIPTION
 
 The apt-repo script allow to show, add and remove APT repositories specified
-by address in sources.list(5) format, URL with optional component, branch 
+by address in L<sources.list(5)> format, URL with optional component, branch 
 name or task number.
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<list>
+
+Show active repositories in L<sources.list(5)> format. If B<-a> is specified
+all available repositories are displayed (inactive are commended by `#`).
+
+=item B<add>
+
+Add repository to list of active repositories.
+
+=item B<rm>
+
+Remove or comment active repository.
+
+=item B<update>
+
+Run C<apt-get update> to update APT cache from active repositories.
+
+=item B<-h>, B<--help>
+
+Print usage information and quit.
+
+=item B<-v>, B<--version>
+
+Print version and quit.
+
+=back
+
+=head1 EXAMPLES
+
+Add p5 branch:
+
+  apt-repo add branch p5
+
+Add repository specified in L<sources.list(5)> format:
+
+  apt-repo add 'rpm http://git.altlinux.org/repo/39115/ i586 task'
+
+Add task repository:
+
+  apt-repo add task 39115
+
+Remove task repository:
+
+  apt-repo rm task 39115
 
 =head1 SEE ALSO
 
@@ -33,14 +80,14 @@ L<sources.list(5)>, L<apt-cache(8)>, L<apt-get(5)>.
 
 =head1 AUTHORS
 
- Andrey Cherepanov (cas#altlinux.org)
+ Andrey Cherepanov E<lt>cas@altlinux.orgE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2011 by Andrey Cherepanov (cas#altlinux.org)
+Copyright 2011 by Andrey Cherepanov E<lt>cas@altlinux.orgE<gt>
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of GPL (see COPYING).
+This software is distributed under the GNU General Public License (GPL)
+version 3 or later.
 
 =cut
 
@@ -70,10 +117,12 @@ my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
+my %repo_keys = ( 'p5' => 'p5', 'Sisyphus' => 'alt' );
+my $default_key = 'updates';
 
 # Show usage information
 sub show_usage {
-	pod2usage (-verbose => 1, -exitval => 0);
+	pod2usage (-verbose => 0, -exitval => 0);
 }
 
 # Show version
@@ -89,7 +138,7 @@ sub get_repos {
 	my $output;
 
 	# Show all active repositories
-	open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)? '  $conf_main $conf_list";
+	open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
 	@out = <P>;
 	close P;
 	$output = join( "", @out );
@@ -130,8 +179,12 @@ sub get_url {
 		# Fix Sisyphus name
 		$object = 'Sisyphus' if $object =~ /^sisyphus$/;
 
-		# Fix key for Sisyphus
-		$key = 'alt' if $object =~ /^Sisyphus$/;
+		# Fix keys
+		if( exists( $repo_keys{ $object } ) ) {
+			$key = $repo_keys{ $object };
+		} else {
+			$key = $default_key;
+		}
 
 		my $u = 'rpm [' . $key . '] ' . $repo_base . $object . '/branch';
 		return (
@@ -252,14 +305,13 @@ sub rm_repo {
 			}
 		}
 
-		print "$a_found $u\n";
+		#print "$a_found $u\n";
 
 		# Remove from $conf_main, comment in other files
 		if( $a_found ) {
 			$u = quotemeta $u;
-			#system "perl -pi -e 's/^[[:space:]]*\\Q$u\\E\$//m' $conf_main";
 			system "sed -i -e '/^[[:space:]]*$u\$/d' $conf_main";
-                        system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
+            system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
 		}
 	}
 	exit 0;
