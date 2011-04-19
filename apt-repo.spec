@@ -1,5 +1,5 @@
 Name:     apt-repo
-Version:  1.0
+Version:  1.0.1
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
@@ -34,6 +34,9 @@ mkdir -p %buildroot%_man1dir
 %doc %_man1dir/%{name}*
 
 %changelog
+* Tue Apr 19 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.1-alt1
+- Fix arch definition on x86_64 (closes: #25464)
+
 * Thu Mar 31 2011 Andrey Cherepanov <cas@altlinux.org> 1.0-alt1
 - Initial build in Sisyphus
 

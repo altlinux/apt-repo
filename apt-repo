@@ -109,6 +109,7 @@ $cmd = $ARGV[0] if scalar @ARGV > 0;
 
 # Get system arch
 my $arch = `/bin/uname -m`;
+chomp $arch; # Truncate carriage return from output
 # arch for x86_32
 $arch = 'i586' if $arch =~ /^i686$/;
 
