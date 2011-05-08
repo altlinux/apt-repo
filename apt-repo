@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.00 2011-03-15 15:02:07 cas Exp $
+# $Id: apt-repo,v 1.0.1 2011-05-08 15:02:07 cas Exp $
 
 # Copyright 2011 by Andrey Cherepanov (cas#altlinux.org)
 
@@ -97,7 +97,7 @@ use warnings;
 use Pod::Usage qw(pod2usage);
 
 # Default parameters
-my $version = '1.0';
+my $version = '1.0.1';
 my $type = 'rpm';
 my $c_branch = 'classic';
 my $c_task = 'task';
@@ -170,8 +170,9 @@ sub get_url {
 	my $repo   = shift;
 	my $object = shift;
 	my @url;
+	my $u;
 	
-	defined $repo or die "Missing repository definition";
+	defined $repo or die "Unknown source. See `man apt-repo` for details.";
 	
 	# Branch 	
 	if( $repo =~ /^branch$/ and defined $object )  {
@@ -187,7 +188,13 @@ sub get_url {
 			$key = $default_key;
 		}
 
-		my $u = 'rpm [' . $key . '] ' . $repo_base . $object . '/branch';
+		if( $object =~ /^Sisyphus$/ ) {
+		    # Sisyphus
+		    $u = 'rpm [' . $key . '] ' . $repo_base . $object;
+		} else {
+		    $u = 'rpm [' . $key . '] ' . $repo_base . $object . '/branch';
+		}
+		
 		return (
 			$u . ' ' . $arch . ' ' . $c_branch, 
 			$u . ' ' . $noarch . ' ' . $c_branch
@@ -212,6 +219,11 @@ sub get_url {
 		       );
 	}
 
+	# Absolute path for hasher repository
+	if( $repo =~ /^\// ) {
+		return ( 'rpm file://' . $repo . ' ' . $arch . ' hasher' );
+	}
+
 	# In format of sources.list(5)
 	if( $repo =~ /^$type(-src|-dir)? / ) {
 		return ( $repo );
@@ -231,7 +243,7 @@ sub add_repo {
 	my @urls = get_url( $repo, $object );
 
 	if( scalar @urls == 0 ) {
-		print "Nothing to add: bad repository format. See -h for details.\n";
+		print "Nothing to add: unknown source. See `man apt-repo` for details.\n";
 		exit 1;
 	}
 
