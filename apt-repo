@@ -181,7 +181,7 @@ sub show_repo {
 sub get_url {
 	my $repo   = shift;
 	my $object = shift;
-	my @url;
+	my @url    = @_;
 	my $u;
 	
 	defined $repo or die "Unknown source. See `man apt-repo` for details.";
@@ -234,12 +234,16 @@ sub get_url {
 		my $u = 'rpm ' . $repo;
 		my $component = $c_branch;
 		
-		$component = $object if defined $object;
-
-		return (
-			$u . ' ' . $arch . ' ' . $component, 
-			$u . ' ' . $noarch . ' ' . $component
-		       );
+		if( defined $object ) {
+			# Architecture is defined
+			return ( $u . ' ' . $object . ' ' . join( ' ', @url ) );
+		} else {
+			# Mirror
+			return (
+				$u . ' ' . $arch . ' ' . $component, 
+				$u . ' ' . $noarch . ' ' . $component
+			);
+		}
 	}
 
 	# Absolute path for hasher repository
@@ -249,7 +253,7 @@ sub get_url {
 
 	# In format of sources.list(5)
 	if( $repo =~ /^$type(-src|-dir)? / ) {
-		return ( $repo );
+		return ( $repo . ' ' . $object . ' ' . join( ' ', @url ) );
 	}
 
 	return ();
@@ -260,10 +264,11 @@ sub add_repo {
 	shift;
 	my $repo   = shift;
 	my $object = shift;
+	my @comps  = @_;
 	my $a_found;
 	my $i_found;
 
-	my @urls = get_url( $repo, $object );
+	my @urls = get_url( $repo, $object, @comps );
 
 	if( scalar @urls == 0 ) {
 		print "Nothing to add: unknown source. See `man apt-repo` for details.\n";
@@ -317,10 +322,11 @@ sub rm_repo {
 	shift;
 	my $repo   = shift;
 	my $object = shift;
+	my @comps  = @_;
 	my $a_found;
 	my $i_found;
 
-	my @urls = get_url( $repo, $object );
+	my @urls = get_url( $repo, $object, @comps );
 
 	if( scalar @urls == 0 ) {
 		print "Nothing to remove: bad repository format. See -h for details.\n";
