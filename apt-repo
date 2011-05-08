@@ -119,6 +119,18 @@ my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
 my %repo_keys = ( 'p5' => 'p5', 'Sisyphus' => 'alt' );
+my @branches  = (
+		  '4.0',
+		  '4.1',
+		  '5.0',
+		  'p5',
+		  '5.1',
+		  'c6',
+		  'p6',
+		  '6.0',
+		  'sisyphus',
+		  'Sisyphus'
+		);
 my $default_key = 'updates';
 
 # Show usage information
@@ -174,6 +186,17 @@ sub get_url {
 	
 	defined $repo or die "Unknown source. See `man apt-repo` for details.";
 	
+	# Quick forms: known branch name or number for task
+	if( grep( /^\Q$repo\E$/, @branches ) ) {
+		$object = $repo;		
+		$repo = 'branch';
+	}
+	
+	if( $repo =~ /^[0-9]+$/ ) {
+		$object = $repo;		
+		$repo = 'task';
+	}
+
 	# Branch 	
 	if( $repo =~ /^branch$/ and defined $object )  {
 		my $key = $object;
