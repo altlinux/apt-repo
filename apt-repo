@@ -14,15 +14,15 @@ apt-repo -- Manipulate APT repository list
 
 =head1 SYNOPSIS
 
- apt-repo> [list] [-a]
- apt-repo> add [APT|URL|branch|task] [name or component]
- apt-repo> rm [APT|URL|branch|task] [name or component]
- apt-repo> update
+ apt-repo [list] [-a]
+ apt-repo add <source>
+ apt-repo rm <source>
+ apt-repo update
 
 =head1 DESCRIPTION
 
 The apt-repo script allow to show, add and remove APT repositories specified
-by address in L<sources.list(5)> format, URL with optional component, branch 
+by B<source> in L<sources.list(5)> format, URL with optional component, branch 
 name or task number.
 
 =head1 OPTIONS
@@ -34,13 +34,13 @@ name or task number.
 Show active repositories in L<sources.list(5)> format. If B<-a> is specified
 all available repositories are displayed (inactive are commended by `#`).
 
-=item B<add>
+=item B<add> source
 
-Add repository to list of active repositories.
+Add source to list of active repositories.
 
-=item B<rm>
+=item B<rm> source
 
-Remove or comment active repository.
+Remove or comment source if it is active.
 
 =item B<update>
 
@@ -56,23 +56,60 @@ Print version and quit.
 
 =back
 
-=head1 EXAMPLES
+=head1 SOURCE FORMAT
 
-Add p5 branch:
+=head2 APT Source
 
-  apt-repo add branch p5
-
-Add repository specified in L<sources.list(5)> format:
+Source can be specified in L<sources.list(5)> format:
 
   apt-repo add 'rpm http://git.altlinux.org/repo/39115/ i586 task'
 
-Add task repository:
+Recognized repository types: rpm, rpm-dir and rpm-src. It is allowed to 
+specify source as separate words. If trailing architecture and component 
+are missed two lines will be added (current system architecture and 
+'noarch') with component 'classic'.
 
-  apt-repo add task 39115
+=head2 URL
 
-Remove task repository:
+APT supports file://, http://, ftp://, rsync:// and cdrom:// protocols. 
+URL with required protocol may trail optional architecture and one or more 
+components. If architecture and component are missed two lines will be added
+(current system architecture and 'noarch') with component 'classic'. This 
+form is useful to add branch on mirror server.
 
-  apt-repo rm task 39115
+Example: 
+
+  apt-repo add ftp://mirror.yandex.ru/altlinux/p5/branch
+
+=head2 Absolute Path
+
+Local directory beginning with '/' added as L<hasher> repository: with 
+current system architecture and 'hasher' component.
+
+  apt-repo add /opt/repo
+
+=head2 Branch
+
+Branch is named repository consist from two parts (current system architecture
+and 'noarch'). By default official server is used. Full form:
+
+  apt-repo add branch <name of branch>
+
+Keyword 'branch' may be omitted. Example:
+
+  apt-repo add p5
+
+=head2 Task
+
+Task is small repository for one or more subtask built in http://git.altlinux.org
+infrastructure. This source is used to install software for test purpose. 
+Any task has unique number. Full form:
+
+  apt-repo add task <number of task>
+
+Keyword 'task' may be omitted. Example:
+
+  apt-repo add 39115
 
 =head1 SEE ALSO
 
@@ -80,7 +117,7 @@ L<sources.list(5)>, L<apt-cache(8)>, L<apt-get(5)>.
 
 =head1 AUTHORS
 
- Andrey Cherepanov E<lt>cas@altlinux.orgE<gt>
+ Andrey Cherepanov <cas@altlinux.org>
 
 =head1 COPYRIGHT AND LICENSE
 
