@@ -1,5 +1,5 @@
 Name:     apt-repo
-Version:  1.0.1
+Version:  1.0.2
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
@@ -34,6 +34,16 @@ mkdir -p %buildroot%_man1dir
 %doc %_man1dir/%{name}*
 
 %changelog
+* Mon May 09 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.2-alt1
+- Make error messages more informational (closes: #25417)
+- Inform about missed task number
+- Show all available branch names
+- Complete documentation
+- Support sources.list(5) tokens in command line
+- Pass all arguments as parts of source line (closes: #25418)
+- Support quick forms of source: known branch name or number for task
+- Fix URL for Sisyphus. Support absolute pathname for hasher repo.
+
 * Tue Apr 19 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.1-alt1
 - Fix arch definition on x86_64 (closes: #25464)
 
