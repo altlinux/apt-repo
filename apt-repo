@@ -272,7 +272,11 @@ sub get_url {
 	}
 
 	# Task
-	if( $repo =~ /^task$/ and defined $object ) {
+	if( $repo =~ /^task$/ ) {
+		if( not defined $object ) {
+			print "Task number is missed.\n";
+			exit 1;
+		}
 		return ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
 	}
 
