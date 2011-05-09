@@ -98,6 +98,9 @@ and 'noarch'). By default official server is used. Full form:
 Keyword 'branch' may be omitted. Example:
 
   apt-repo add p5
+  
+Run `apt-repo add branch` without name of branch displays all available 
+branch names.
 
 =head2 Task
 
@@ -235,7 +238,14 @@ sub get_url {
 	}
 
 	# Branch 	
-	if( $repo =~ /^branch$/ and defined $object )  {
+	if( $repo =~ /^branch$/ ) {
+		if ( not defined $object )  {
+			# Show all available branch names
+			foreach( @branches ) {
+				print $_ . "\n";
+			}
+			exit 0;
+		}
 		my $key = $object;
 
 		# Fix Sisyphus name
