@@ -322,7 +322,7 @@ sub add_repo {
 	my @urls = get_url( $repo, $object, @comps );
 
 	if( scalar @urls == 0 ) {
-		print "Nothing to add: unknown source. See `man apt-repo` for details.\n";
+		print "Nothing to add: bad source format. See `man apt-repo` for details.\n";
 		exit 1;
 	}
 
@@ -380,7 +380,7 @@ sub rm_repo {
 	my @urls = get_url( $repo, $object, @comps );
 
 	if( scalar @urls == 0 ) {
-		print "Nothing to remove: bad repository format. See -h for details.\n";
+		print "Nothing to remove: bad source format. See `man apt-repo` for details.\n";
 		exit 1;
 	}
 
@@ -404,7 +404,9 @@ sub rm_repo {
 		if( $a_found ) {
 			$u = quotemeta $u;
 			system "sed -i -e '/^[[:space:]]*$u\$/d' $conf_main";
-            system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
+			system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
+		} else {
+			print "Nothing to remove: source was not found.\n";
 		}
 	}
 	exit 0;
