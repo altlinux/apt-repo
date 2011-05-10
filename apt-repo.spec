@@ -1,6 +1,6 @@
 Name:     apt-repo
 Version:  1.0.2
-Release:  alt1
+Release:  alt0.M41.1
 
 Summary:  Script for manipulation APT repository list
 License:  GPLv3+
@@ -34,6 +34,9 @@ mkdir -p %buildroot%_man1dir
 %doc %_man1dir/%{name}*
 
 %changelog
+* Tue May 10 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.2-alt0.M41.1
+- Backport 4.1 branch
+
 * Mon May 09 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.2-alt1
 - Make error messages more informational (closes: #25417)
 - Inform about missed task number
