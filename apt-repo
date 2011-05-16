@@ -304,7 +304,11 @@ sub get_url {
 
 	# In format of sources.list(5)
 	if( $repo =~ /^$type(-src|-dir)?\b/ ) {
-		return ( $repo . ' ' . $object . ' ' . join( ' ', @url ) );
+		if( defined $object ) {
+			return ( $repo . ' ' . $object . ' ' . join( ' ', @url ) );
+		} else {
+			return ( $repo );
+		}
 	}
 
 	return ();
