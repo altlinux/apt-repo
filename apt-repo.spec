@@ -1,5 +1,5 @@
 Name:     apt-repo
-Version:  1.0.2
+Version:  1.0.3
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
@@ -34,6 +34,11 @@ mkdir -p %buildroot%_man1dir
 %doc %_man1dir/%{name}*
 
 %changelog
+* Mon May 16 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.3-alt1
+- Describe source definition in help
+- Add keyword `all` in tm command to remove all active sources
+- Fix use source as one string
+
 * Mon May 09 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.2-alt1
 - Make error messages more informational (closes: #25417)
 - Inform about missed task number
