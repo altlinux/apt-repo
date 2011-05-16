@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.0.2 2011-05-09 09:17:07 cas Exp $
+# $Id: apt-repo,v 1.0.3 2011-05-16 19:25:00 cas Exp $
 
 # Copyright 2011 by Andrey Cherepanov (cas#altlinux.org)
 
@@ -16,8 +16,10 @@ apt-repo -- Manipulate APT repository list
 
  apt-repo [list] [-a]
  apt-repo add <source>
- apt-repo rm <source>
+ apt-repo rm <source|all>
  apt-repo update
+
+<source> may be branch or task name, sources.list(5) string. URL or local path.
 
 =head1 DESCRIPTION
 
@@ -40,7 +42,8 @@ Add source to list of active repositories.
 
 =item B<rm> source
 
-Remove or comment source if it is active.
+Remove or comment source if it is active. Special keyword B<all> removes all
+active sources.
 
 =item B<update>
 
@@ -137,7 +140,7 @@ use warnings;
 use Pod::Usage qw(pod2usage);
 
 # Default parameters
-my $version = '1.0.1';
+my $version = '1.0.3';
 my $type = 'rpm';
 my $c_branch = 'classic';
 my $c_task = 'task';
@@ -381,7 +384,16 @@ sub rm_repo {
 	my $a_found;
 	my $i_found;
 
-	my @urls = get_url( $repo, $object, @comps );
+	my @urls;
+
+	if( defined $repo and $repo =~ /^all$/ ) {
+		# Remove all active sources
+        open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
+        @urls = <P>;
+		close P;
+	} else {
+		@urls = get_url( $repo, $object, @comps );
+	}
 
 	if( scalar @urls == 0 ) {
 		print "Nothing to remove: bad source format. See `man apt-repo` for details.\n";
@@ -391,6 +403,8 @@ sub rm_repo {
 	foreach my $u ( @urls ) {
 		$a_found = 0;
 		$i_found = 0;
+
+		chomp $u;
 		
 		# Lookup active
 		foreach( split( /\n/, get_repos() ) ) {
