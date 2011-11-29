@@ -1,150 +1,23 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.0.3 2011-05-16 19:25:00 cas Exp $
+# $Id: apt-repo,v 1.1.0 2011-11-29 07:03:00 cas Exp $
 
 # Copyright 2011 by Andrey Cherepanov (cas#altlinux.org)
 
 # This program is free software; you can redistribute it and/or modify it
-# under the terms of GPL (see COPYING).
-
-=head1 NAME
-
-apt-repo -- Manipulate APT repository list
-
-=head1 SYNOPSIS
-
- apt-repo [list] [-a]
- apt-repo add <source>
- apt-repo rm <source|all>
- apt-repo update
-
-<source> may be branch or task name, sources.list(5) string. URL or local path.
-
-=head1 DESCRIPTION
-
-The apt-repo script allow to show, add and remove APT repositories specified
-by B<source> in L<sources.list(5)> format, URL with optional component, branch 
-name or task number.
-
-=head1 OPTIONS
-
-=over 4
-
-=item B<list>
-
-Show active repositories in L<sources.list(5)> format. If B<-a> is specified
-all available repositories are displayed (inactive are commended by `#`).
-
-=item B<add> source
-
-Add source to list of active repositories.
-
-=item B<rm> source
-
-Remove or comment source if it is active. Special keyword B<all> removes all
-active sources.
-
-=item B<update>
-
-Run C<apt-get update> to update APT cache from active repositories.
-
-=item B<-h>, B<--help>
-
-Print usage information and quit.
-
-=item B<-v>, B<--version>
-
-Print version and quit.
-
-=back
-
-=head1 SOURCE FORMAT
-
-=head2 APT Source
-
-Source can be specified in L<sources.list(5)> format:
-
-  apt-repo add 'rpm http://git.altlinux.org/repo/39115/ i586 task'
-
-Recognized repository types: rpm, rpm-dir and rpm-src. It is allowed to 
-specify source as separate words. If trailing architecture and component 
-are missed two lines will be added (current system architecture and 
-'noarch') with component 'classic'.
-
-=head2 URL
-
-APT supports file://, http://, ftp://, rsync:// and cdrom:// protocols. 
-URL with required protocol may trail optional architecture and one or more 
-components. If architecture and component are missed two lines will be added
-(current system architecture and 'noarch') with component 'classic'. This 
-form is useful to add branch on mirror server.
-
-Example: 
-
-  apt-repo add ftp://mirror.yandex.ru/altlinux/p5/branch
-
-=head2 Absolute Path
-
-Local directory beginning with '/' added as L<hasher> repository: with 
-current system architecture and 'hasher' component.
-
-  apt-repo add /opt/repo
-
-=head2 Branch
-
-Branch is named repository consist from two parts (current system architecture
-and 'noarch'). By default official server is used. Full form:
-
-  apt-repo add branch <name of branch>
-
-Keyword 'branch' may be omitted. Example:
-
-  apt-repo add p5
-  
-Run `apt-repo add branch` without name of branch displays all available 
-branch names.
-
-=head2 Task
-
-Task is small repository for one or more subtask built in http://git.altlinux.org
-infrastructure. This source is used to install software for test purpose. 
-Any task has unique number. Full form:
-
-  apt-repo add task <number of task>
-
-Keyword 'task' may be omitted. Example:
-
-  apt-repo add 39115
-
-=head1 SEE ALSO
-
-L<sources.list(5)>, L<apt-cache(8)>, L<apt-get(5)>.
-
-=head1 AUTHORS
-
- Andrey Cherepanov <cas@altlinux.org>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright 2011 by Andrey Cherepanov E<lt>cas@altlinux.orgE<gt>
-
-This software is distributed under the GNU General Public License (GPL)
-version 3 or later.
-
-=cut
+# under the terms of GNU General Public License (GPL) version 3 or later.
 
 use strict;
 use warnings;
 
-use Pod::Usage qw(pod2usage);
-
 # Default parameters
-my $version = '1.0.3';
-my $type = 'rpm';
+our $VERSION = '1.1.0';
+
+my $type     = 'rpm';
 my $c_branch = 'classic';
-my $c_task = 'task';
-my $noarch = 'noarch';
+my $c_task   = 'task';
+my $noarch   = 'noarch';
 
 my $cmd = 'list';
 
@@ -178,12 +51,25 @@ my $default_key = 'updates';
 
 # Show usage information
 sub show_usage {
-	pod2usage (-verbose => 0, -exitval => 0);
+	print <<"HELP";
+Usage: apt-repo COMMAND SOURCE
+Manipulate APT repository list.
+
+COMMANDS:
+  list [-a]        List active or all repositories
+  add <source>     Add APT repository
+  rm <source|all>  Remove APT repository
+  update           Update APT caches
+  -h, --help       Show help and exit
+  -v               Show version and exit
+
+<source> may be branch or task name, sources.list(5) string. URL or local path.
+HELP
 }
 
 # Show version
 sub show_version {
-	print "$version\n";
+	print "$VERSION\n";
 	exit 0;
 }
 
@@ -388,8 +274,8 @@ sub rm_repo {
 
 	if( defined $repo and $repo =~ /^all$/ ) {
 		# Remove all active sources
-        open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
-        @urls = <P>;
+        	open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
+        	@urls = <P>;
 		close P;
 	} else {
 		@urls = get_url( $repo, $object, @comps );

@@ -1,5 +1,5 @@
 Name:     apt-repo
-Version:  1.0.3
+Version:  1.1.0
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
@@ -10,7 +10,7 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 BuildArch: noarch
 
 Source: %name-%version.tar
-BuildRequires: perl-podlators
+BuildRequires: gzip
 Requires:  apt
 
 %description
@@ -24,16 +24,21 @@ name or task number.
 %install
 install -Dm755 %name %buildroot%_bindir/%name
 mkdir -p %buildroot%_man1dir
-/usr/bin/pod2man %buildroot%_bindir/%name > %buildroot%_man1dir/%name.1
+install -Dpm 644 %name.1 %buildroot%_man1dir/%name.1
+gzip %buildroot%_man1dir/%name.1
 
 %find_lang %name
 
 %files -f %name.lang
 %doc TODO
+%doc %_man1dir/*
 %_bindir/%name
 %doc %_man1dir/%{name}*
 
 %changelog
+* Tue Nov 29 2011 Andrey Cherepanov <cas@altlinux.org> 1.1.0-alt1
+- Remove man page from program to separate file
+
 * Mon May 16 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.3-alt1
 - Describe source definition in help
 - Add keyword `all` in tm command to remove all active sources

@@ -1,0 +1,158 @@
+.\" $Id$
+.\"
+.\" Man page for the apt-repo program.
+.\"
+.\" Copyright (c) 2011 Andrey Cherepanov <cas@altlinux.org>
+.\"
+.\" This software is distributed under the GNU General Public License (GPL)
+.\" version 3 or later.
+.\"
+.Dd "November 29, 2011"
+.Dt APT\-REPO 1
+.Os "apt-repo"
+
+
+.Sh NAME
+.Nm apt\-repo
+.Nd Manipulate APT repository list
+
+
+.Sh SYNOPSIS
+.Nm apt\-repo 
+.Op list
+.Op Fl a
+.Nm apt\-repo
+add
+.Ar source
+.Nm apt\-repo
+rm
+.Ar source|all
+.Nm apt\-repo
+update
+.Nm apt\-repo 
+.Op Fl h
+.Op Fl v
+
+.Sh DESCRIPTION
+The 
+.Nm apt\-repo
+script allow to show, add and remove 
+.Tn APT
+repositories specified by 
+.Ar source
+in 
+.Xr sources.list 5
+format, 
+.Tn URL
+with optional component, branch name or task number.
+.Sh OPTIONS
+.Bl -tag -width Ds 
+.It list
+Show active repositories in 
+.Xr sources.list 5
+format. If 
+.Fl a
+is specified all available repositories are displayed (inactive are commended by 
+.Ql #
+).
+.It add Ar source
+Add 
+.Ar source
+to list of active repositories.
+.It rm Ar source
+Remove or comment 
+.Ar source
+if it is active. Special keyword 
+.Ar all
+removes all active sources.
+.It update
+Run 
+.Ns
+.Dl apt\-get update
+to update 
+.Tn APT
+cache from active repositories.
+.It Fl h Fl \-help
+Print usage information and quit.
+.It Fl v Fl \-version
+Print version and quit.
+.El
+
+
+.Sh "SOURCE FORMAT"
+.Ss "APT Source"
+Source can be specified in 
+.Xr sources.list 5
+format:
+.Pp
+.Dl apt\-repo add \*qrpm http://git.altlinux.org/repo/39115/ i586 task\*q
+.Pp
+Recognized repository types: rpm, rpm-dir and rpm-src. It is allowed to 
+specify source as separate words. If trailing architecture and component 
+are missed two lines will be added (current system architecture and 
+.Ql noarch
+) with component 
+.Ql classic
+.
+.Ss "URL"
+.Tn APT
+supports file://, http://, ftp://, rsync:// and cdrom:// protocols. 
+.Tn URL
+with required protocol may trail optional architecture and one or more 
+components. If architecture and component are missed two lines will be added
+(current system architecture and 
+.Ql noarch
+) with component 
+.Ql classic. This 
+form is useful to add branch on mirror server.
+.Pp
+Example:
+.Pp
+.Dl apt\-repo add ftp://mirror.yandex.ru/altlinux/p5/branch
+.Ss "Absolute Path"
+Local directory beginning with 
+.Ql /
+added as hasher repository: with current system architecture and 
+.Xr hasher
+component.
+.Pp
+.Dl apt\-repo add /opt/repo
+.Ss "Branch"
+Branch is named repository consist from two parts (current system architecture
+and 'noarch'). By default official server is used. Full form:
+.Pp
+.Dl apt\-repo add branch <name of branch>
+.Pp
+Keyword 
+.Ql branch
+may be omitted. Example:
+.Pp
+.Dl apt\-repo add p5
+.Pp
+Run 
+.Dl apt\-repo add branch
+.Pp
+without name of branch displays all available branch names.
+.Ss "Task"
+Task is small repository for one or more subtask built in http://git.altlinux.org
+infrastructure. This source is used to install software for test purpose. 
+Any task has unique number. Full form:
+.Pp
+.Dl apt\-repo add task <number of task>
+.Pp
+Keyword 
+.Ql task
+may be omitted. Example:
+.Pp
+.Dl apt\-repo add 39115
+
+
+.Sh "SEE ALSO"
+.Xr sources.list 5 , 
+.Xr apt\-cache 8 ,
+.Xr apt\-get 5
+
+
+.Sh AUTHORS
+.An Andrey Cherepanov 
+.Mt cas@altlinux.org
