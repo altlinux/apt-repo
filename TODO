@@ -4,4 +4,4 @@
 - lookup best mirror
 - create local repository
 - support CD and DVD sources
-- l10n
+- l10n (both in program output and man page)
