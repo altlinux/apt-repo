@@ -38,6 +38,8 @@ gzip %buildroot%_man1dir/%name.1
 %changelog
 * Tue Nov 29 2011 Andrey Cherepanov <cas@altlinux.org> 1.1.0-alt1
 - Remove man page from program to separate file
+- Support remove only specified type of sources
+- Fix cdrom source remove
 
 * Mon May 16 2011 Andrey Cherepanov <cas@altlinux.org> 1.0.3-alt1
 - Describe source definition in help

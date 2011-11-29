@@ -315,6 +315,9 @@ sub rm_repo {
 		# Remove from $conf_main, comment in other files
 		if( $a_found ) {
 			$u = quotemeta $u;
+			# Unescape parenthesis in sources for correct sed work
+			$u =~ s/\\\(/(/;
+			$u =~ s/\\\)/)/;
 			system "sed -i -e '/^[[:space:]]*$u\$/d' $conf_main";
 			system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
 		} else {
