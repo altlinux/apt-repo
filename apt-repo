@@ -277,6 +277,14 @@ sub rm_repo {
         	open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
         	@urls = <P>;
 		close P;
+
+		# Remove repositories by specified type
+		if( defined $object ) {
+			@urls = grep( /\b\Q$repo_base\E/, @urls ) if( $object =~ /^branch(es)?$/ );
+			@urls = grep( /\b\Q$repo_task\E[0-9]+/, @urls ) if( $object =~ /^task(s)?$/ );
+			@urls = grep( /^[[:space:]]*rpm[[:space:]]+cdrom:/, @urls ) if( $object =~ /^cdrom(s)?$/ );
+		}
+		
 	} else {
 		@urls = get_url( $repo, $object, @comps );
 	}

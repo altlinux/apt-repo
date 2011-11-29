@@ -26,7 +26,7 @@ add
 .Ar source
 .Nm apt\-repo
 rm
-.Ar source|all
+.Ar source|all <type>
 .Nm apt\-repo
 update
 .Nm apt\-repo 
@@ -64,7 +64,11 @@ Remove or comment
 .Ar source
 if it is active. Special keyword 
 .Ar all
-removes all active sources.
+removes all active sources. The `all` keyword followed by optional type removes
+all sources of specified type: 
+`branch` or `branches` removes all branch sources,
+`task` or `tasks` removes all tasks sources,
+`cdrom` or `cdroms` removes all cdrom sources.
 .It update
 Run 
 .Ns
