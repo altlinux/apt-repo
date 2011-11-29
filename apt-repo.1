@@ -26,7 +26,8 @@ add
 .Ar source
 .Nm apt\-repo
 rm
-.Ar source|all <type>
+.Ar source|all
+.Op Ar type
 .Nm apt\-repo
 update
 .Nm apt\-repo 
@@ -59,16 +60,28 @@ is specified all available repositories are displayed (inactive are commended by
 Add 
 .Ar source
 to list of active repositories.
-.It rm Ar source
+.It rm Ar source [<type>]
 Remove or comment 
 .Ar source
 if it is active. Special keyword 
 .Ar all
-removes all active sources. The `all` keyword followed by optional type removes
-all sources of specified type: 
-`branch` or `branches` removes all branch sources,
-`task` or `tasks` removes all tasks sources,
-`cdrom` or `cdroms` removes all cdrom sources.
+removes all active sources. The
+.Ar all
+keyword followed by optional
+.Ar <type>
+removes all sources of specified type:
+.Ql branch
+or
+.Ql branches
+removes all branch sources,
+.Ql task
+or
+.Ql tasks
+removes all tasks sources,
+.Ql cdrom
+or
+.Ql cdroms
+removes all cdrom sources.
 .It update
 Run 
 .Ns
@@ -107,8 +120,8 @@ components. If architecture and component are missed two lines will be added
 (current system architecture and 
 .Ql noarch
 ) with component 
-.Ql classic. This 
-form is useful to add branch on mirror server.
+.Ql classic .
+This form is useful to add branch on mirror server.
 .Pp
 Example:
 .Pp
