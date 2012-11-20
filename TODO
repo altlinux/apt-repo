@@ -5,3 +5,7 @@
 - create local repository
 - support CD and DVD sources
 - l10n (both in program output and man page)
+- documentation and examples on http://www.altlinux.org/Apt-repo
+- show and install task packages
+
+See https://bugzilla.altlinux.org/buglist.cgi?component=apt-repo&product=Sisyphus
