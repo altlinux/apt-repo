@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.1.0 2011-11-29 07:03:00 cas Exp $
+# $Id: apt-repo,v 1.1.2 2012-11-20 13:39:00 cas Exp $
 
 # Copyright 2011 by Andrey Cherepanov (cas#altlinux.org)
 
@@ -12,7 +12,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.1.0';
+our $VERSION = '1.1.2';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -280,6 +280,7 @@ sub rm_repo {
 
 		# Remove repositories by specified type
 		if( defined $object ) {
+			$object =~ /^(branch|branches|task|tasks|cdrom|cdroms)$/ or die "Missing repository type for `apt-repo rm all <type>`";
 			@urls = grep( /\b\Q$repo_base\E/, @urls ) if( $object =~ /^branch(es)?$/ );
 			@urls = grep( /\b\Q$repo_task\E[0-9]+/, @urls ) if( $object =~ /^task(s)?$/ );
 			@urls = grep( /^[[:space:]]*rpm[[:space:]]+cdrom:/, @urls ) if( $object =~ /^cdrom(s)?$/ );
@@ -287,11 +288,6 @@ sub rm_repo {
 		
 	} else {
 		@urls = get_url( $repo, $object, @comps );
-	}
-
-	if( scalar @urls == 0 ) {
-		print "Nothing to remove: bad source format. See `man apt-repo` for details.\n";
-		exit 1;
 	}
 
 	foreach my $u ( @urls ) {
@@ -345,4 +341,3 @@ show_version() if $cmd =~ /-(v|-version)$/;
 show_usage();
 
 __END__
-
