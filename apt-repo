@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.1.2 2012-11-20 13:39:00 cas Exp $
+# $Id: apt-repo,v 1.1.1 2012-11-20 14:30:00 cas Exp $
 
-# Copyright 2011 by Andrey Cherepanov (cas#altlinux.org)
+# Copyright 2011,2012 by Andrey Cherepanov (cas@altlinux.org)
 
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of GNU General Public License (GPL) version 3 or later.
@@ -12,7 +12,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.1.2';
+our $VERSION = '1.1.1';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
