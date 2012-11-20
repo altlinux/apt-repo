@@ -59,11 +59,12 @@ COMMANDS:
   list [-a]        List active or all repositories
   add <source>     Add APT repository
   rm <source|all>  Remove APT repository
+  clear            Remove all cdrom and task sources
   update           Update APT caches
   -h, --help       Show help and exit
   -v               Show version and exit
 
-<source> may be branch or task name, sources.list(5) string. URL or local path.
+<source> may be branch or task name, sources.list(5) string, URL or local path.
 HELP
 }
 
@@ -320,6 +321,19 @@ sub rm_repo {
 			print "Nothing to remove: source was not found.\n";
 		}
 	}
+	return 0;
+}
+
+# Remove all cdrom and task repositories
+sub clear_repo {
+	my @cmd;
+
+	@cmd = qw(rm all cdroms);
+	rm_repo( @cmd );
+
+	@cmd = qw(rm all tasks);
+	rm_repo( @cmd );
+
 	exit 0;
 }
 
@@ -335,9 +349,10 @@ show_repo( @ARGV ) if $cmd =~ /^list$/;
 show_repo( 'list', '-a' ) if $cmd =~ /^-a$/;
 add_repo( @ARGV ) if $cmd =~ /^add$/;
 rm_repo( @ARGV ) if $cmd =~ /^rm$/;
+clear_repo( @ARGV ) if $cmd =~ /^clear$/;
 update_repo() if $cmd =~ /^update$/;
 show_usage() if $cmd =~ /-(h|-help)$/; 
 show_version() if $cmd =~ /-(v|-version)$/;
-show_usage();
+show_usage() if scalar @ARGV == 0;
 
 __END__
