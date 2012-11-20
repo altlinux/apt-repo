@@ -224,6 +224,8 @@ sub add_repo {
 		$a_found = 0;
 		$i_found = 0;
 		
+		#print "added $u\n";
+
 		# Lookup active
 		foreach( split( /\n/, get_repos( '-a' ) ) ) {
 			# Check active
@@ -248,6 +250,9 @@ sub add_repo {
 		# Uncomment commented source
 		if( $i_found ) {
 			my $ur = quotemeta $u;
+			# Unescape parenthesis in sources for correct sed work
+			$ur =~ s/\\\(/(/;
+			$ur =~ s/\\\)/)/;
 			system "sed -i 's/^[[:space:]]*#[[:space:]]*\\($ur\\)\$/\\1/' $conf_main $conf_list";
 			next;
 		}
