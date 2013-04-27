@@ -59,7 +59,7 @@ COMMANDS:
   list [-a]        List active or all repositories
   add <source>     Add APT repository
   rm <source|all>  Remove APT repository
-  clear            Remove all cdrom and task sources
+  clean            Remove all cdrom and task sources
   update           Update APT caches
   -h, --help       Show help and exit
   -v               Show version and exit
@@ -354,10 +354,11 @@ show_repo( @ARGV ) if $cmd =~ /^list$/;
 show_repo( 'list', '-a' ) if $cmd =~ /^-a$/;
 add_repo( @ARGV ) if $cmd =~ /^add$/;
 rm_repo( @ARGV ) if $cmd =~ /^rm$/;
-clear_repo( @ARGV ) if $cmd =~ /^clear$/;
+clear_repo( @ARGV ) if $cmd =~ /^clea[rn]$/;
 update_repo() if $cmd =~ /^update$/;
-show_usage() if $cmd =~ /-(h|-help)$/; 
+show_usage() if $cmd =~ /-(h|-help)$/ or scalar @ARGV == 0; 
 show_version() if $cmd =~ /-(v|-version)$/;
 show_usage() if scalar @ARGV == 0;
+
 
 __END__
