@@ -43,7 +43,9 @@ my @branches  = (
 		  '5.1',
 		  'c6',
 		  'p6',
-		  '6.0',
+		  't6',
+		  'p7',
+		  't7',
 		  'sisyphus',
 		  'Sisyphus'
 		);
