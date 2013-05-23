@@ -68,6 +68,7 @@ COMMANDS:
 
 <source> may be branch or task name, sources.list(5) string, URL or local path.
 HELP
+    exit 0;
 }
 
 # Show version
@@ -352,15 +353,21 @@ sub update_repo {
 
 # Process command line arguments
 
+# Exiting functions
 show_repo( @ARGV ) if $cmd =~ /^list$/;
 show_repo( 'list', '-a' ) if $cmd =~ /^-a$/;
-add_repo( @ARGV ) if $cmd =~ /^add$/;
-rm_repo( @ARGV ) if $cmd =~ /^rm$/;
-clear_repo( @ARGV ) if $cmd =~ /^clea[rn]$/;
-update_repo() if $cmd =~ /^update$/;
 show_usage() if $cmd =~ /-(h|-help)$/ or scalar @ARGV == 0; 
 show_version() if $cmd =~ /-(v|-version)$/;
-show_usage() if scalar @ARGV == 0;
+clear_repo( @ARGV ) if $cmd =~ /^clea[rn]$/;
+update_repo() if $cmd =~ /^update$/;
 
+# Functions with return
+if( $cmd =~ /^(add|rm)$/ ) {
+    add_repo( @ARGV ) if $cmd =~ /^add$/;
+    rm_repo( @ARGV ) if $cmd =~ /^rm$/;
+} else {
+    print "Unknown command `$cmd`.\nRun `apt-repo --help` for supported commands.\n";
+    exit 1;
+}
 
 __END__
