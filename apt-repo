@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.1.2 2013-04-27 23:41:00 cas Exp $
+# $Id: apt-repo,v 1.1.3 2013-05-23 11:40:00 cas Exp $
 
 # Copyright 2011-2013 by Andrey Cherepanov (cas@altlinux.org)
 
@@ -12,7 +12,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.1.2';
+our $VERSION = '1.1.3';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -34,7 +34,11 @@ my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
-my %repo_keys = ( 'p5' => 'p5', 'Sisyphus' => 'alt' );
+my %repo_keys = ( 
+          'p5' => 'p5',
+          'p6' => 'p6',
+          'p7' => 'p7',
+          'Sisyphus' => 'alt' );
 my @branches  = (
 		  '4.0',
 		  '4.1',
@@ -116,6 +120,7 @@ sub get_url {
 	my $object = shift;
 	my @url    = @_;
 	my $u;
+    my @branch_source;
 	
 	defined $repo or die "Unknown source. See `man apt-repo` for details.";
 	
@@ -158,10 +163,17 @@ sub get_url {
 		    $u = 'rpm [' . $key . '] ' . $repo_base . $object . '/branch';
 		}
 		
-		return (
-			$u . ' ' . $arch . ' ' . $c_branch, 
-			$u . ' ' . $noarch . ' ' . $c_branch
-		       );
+        @branch_source = (
+               $u . ' ' . $arch . ' ' . $c_branch,
+               $u . ' ' . $noarch . ' ' . $c_branch
+            );
+        # For x86_64 add Arepo 2.0 source
+        if( $arch =~ /^x86_64$/ ) {
+            push( @branch_source, $u . ' x86_64-i586 ' . $c_branch);
+        }
+
+		return @branch_source;
+
 	}
 
 	# Task
@@ -299,6 +311,7 @@ sub rm_repo {
 		@urls = get_url( $repo, $object, @comps );
 	}
 
+    my $has_warning = 0;
 	foreach my $u ( @urls ) {
 		$a_found = 0;
 		$i_found = 0;
@@ -326,7 +339,10 @@ sub rm_repo {
 			system "sed -i -e '/^[[:space:]]*$u\$/d' $conf_main";
 			system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
 		} else {
-			print "Nothing to remove: source was not found.\n";
+            if( not $has_warning ) {
+			    print "Nothing to remove: source was not found.\n";
+                $has_warning = 1;
+            }
 		}
 	}
 	return 0;
