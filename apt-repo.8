@@ -2,23 +2,22 @@
 .\"
 .\" Man page for the apt-repo program.
 .\"
-.\" Copyright (c) 2011 Andrey Cherepanov <cas@altlinux.org>
+.\" Copyright (c) 2011-2013 Andrey Cherepanov <cas@altlinux.org>
 .\"
 .\" This software is distributed under the GNU General Public License (GPL)
 .\" version 3 or later.
 .\"
-.Dd "November 29, 2011"
-.Dt APT\-REPO 1
-.Os "apt-repo"
-
-
+.Os Linux
+.Dd "August 30, 2013"
+.ds volume-operating-system Linux
+.Dt apt\-repo 8
+.\"
 .Sh NAME
 .Nm apt\-repo
 .Nd Manipulate APT repository list
-
-
+.\"
 .Sh SYNOPSIS
-.Nm apt\-repo 
+.Nm apt\-repo
 .Op list
 .Op Fl a
 .Nm apt\-repo
@@ -32,40 +31,40 @@ rm
 clean
 .Nm apt\-repo
 update
-.Nm apt\-repo 
+.Nm apt\-repo
 .Op Fl h
 .Op Fl v
-
+.\"
 .Sh DESCRIPTION
-The 
+The
 .Nm apt\-repo
-script allow to show, add and remove 
+script allow to show, add and remove
 .Tn APT
-repositories specified by 
+repositories specified by
 .Ar source
-in 
+in
 .Xr sources.list 5
-format, 
+format,
 .Tn URL
 with optional component, branch name or task number.
 .Sh OPTIONS
-.Bl -tag -width Ds 
+.Bl -tag -width Ds
 .It list
-Show active repositories in 
+Show active repositories in
 .Xr sources.list 5
-format. If 
+format. If
 .Fl a
-is specified all available repositories are displayed (inactive are commended by 
+is specified all available repositories are displayed (inactive are commended by
 .Ql #
 ).
 .It add Ar source
-Add 
+Add
 .Ar source
 to list of active repositories.
 .It rm Ar source [<type>]
-Remove or comment 
+Remove or comment
 .Ar source
-if it is active. Special keyword 
+if it is active. Special keyword
 .Ar all
 removes all active sources. The
 .Ar all
@@ -87,10 +86,9 @@ removes all cdrom sources.
 .It clean
 Removes all cdrom and task sources.
 .It update
-Run 
-.Ns
+Run
 .Dl apt\-get update
-to update 
+to update
 .Tn APT
 cache from active repositories.
 .It Fl h Fl \-help
@@ -98,42 +96,41 @@ Print usage information and quit.
 .It Fl v Fl \-version
 Print version and quit.
 .El
-
-
+.\"
 .Sh "SOURCE FORMAT"
 .Ss "APT Source"
-Source can be specified in 
+Source can be specified in
 .Xr sources.list 5
 format:
 .Pp
 .Dl apt\-repo add \*qrpm http://git.altlinux.org/repo/39115/ i586 task\*q
 .Pp
-Recognized repository types: rpm, rpm-dir and rpm-src. It is allowed to 
-specify source as separate words. If trailing architecture and component 
-are missed two lines will be added (current system architecture and 
+Recognized repository types: rpm, rpm-dir and rpm-src. It is allowed to
+specify source as separate words. If trailing architecture and component
+are missed two lines will be added (current system architecture and
 .Ql noarch
-) with component 
+) with component
 .Ql classic
 .
 .Ss "URL"
 .Tn APT
-supports file://, http://, ftp://, rsync:// and cdrom:// protocols. 
+supports file://, copy://, http://, ftp://, rsync:// and cdrom:// protocols.
 .Tn URL
-with required protocol may trail optional architecture and one or more 
+with required protocol may trail optional architecture and one or more
 components. If architecture and component are missed two lines will be added
-(current system architecture and 
+(current system architecture and
 .Ql noarch
-) with component 
+) with component
 .Ql classic .
 This form is useful to add branch on mirror server.
 .Pp
 Example:
 .Pp
-.Dl apt\-repo add ftp://mirror.yandex.ru/altlinux/p5/branch
+.Dl apt\-repo add ftp://mirror.yandex.ru/altlinux/p7/branch
 .Ss "Absolute Path"
-Local directory beginning with 
+Local directory beginning with
 .Ql /
-added as hasher repository: with current system architecture and 
+added as hasher repository: with current system architecture and
 .Xr hasher
 component.
 .Pp
@@ -144,36 +141,34 @@ and 'noarch'). By default official server is used. Full form:
 .Pp
 .Dl apt\-repo add branch <name of branch>
 .Pp
-Keyword 
+Keyword
 .Ql branch
 may be omitted. Example:
 .Pp
-.Dl apt\-repo add p5
+.Dl apt\-repo add p7
 .Pp
-Run 
+Run
 .Dl apt\-repo add branch
 .Pp
 without name of branch displays all available branch names.
 .Ss "Task"
 Task is small repository for one or more subtask built in http://git.altlinux.org
-infrastructure. This source is used to install software for test purpose. 
+infrastructure. This source is used to install software for test purpose.
 Any task has unique number. Full form:
 .Pp
 .Dl apt\-repo add task <number of task>
 .Pp
-Keyword 
+Keyword
 .Ql task
 may be omitted. Example:
 .Pp
 .Dl apt\-repo add 39115
-
-
+.\"
 .Sh "SEE ALSO"
-.Xr sources.list 5 , 
+.Xr sources.list 5 ,
 .Xr apt\-cache 8 ,
-.Xr apt\-get 5
-
-
+.Xr apt\-get 8
+.\"
 .Sh AUTHORS
-.An Andrey Cherepanov 
+.An Andrey Cherepanov
 .Mt cas@altlinux.org
