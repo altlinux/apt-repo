@@ -12,7 +12,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.1.5';
+our $VERSION = '1.1.6';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -178,7 +178,15 @@ sub get_url {
 			print "Task number is missed.\n";
 			exit 1;
 		}
-		return ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
+		if( $arch =~ /^x86_64$/ ) {
+			# Arepo source for x86_64
+			return (
+				'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task,
+				'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task
+				);
+		} else {
+			return ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
+		}
 	}
 
 	# URL
