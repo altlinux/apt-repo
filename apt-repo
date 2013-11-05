@@ -19,7 +19,8 @@ my $c_branch = 'classic';
 my $c_task   = 'task';
 my $noarch   = 'noarch';
 
-my $cmd = 'list';
+my $cmd      = 'list';
+my $continues = 0;
 
 $cmd = $ARGV[0] if scalar @ARGV > 0;
 
@@ -60,11 +61,13 @@ Usage: apt-repo COMMAND SOURCE
 Manipulate APT repository list.
 
 COMMANDS:
-  list [-a|<task_number>|task <task_number>]  List active or all repositories or task package list
+  list [-a]        List active or all repositories
+  list [task] <id> List task packages
   add <source>     Add APT repository
   rm <source|all>  Remove APT repository
   clean            Remove all cdrom and task sources
   update           Update APT caches
+  test [task] <id> Install all packages (except *-debuginfo) from task
   -h, --help       Show help and exit
   -v               Show version and exit
 
@@ -107,6 +110,8 @@ sub get_task_content {
 	my $task = shift;
 	my @out = ();
 
+	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
+
 	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -v '\\-debuginfo\$' | sort ";
         @out = <P>;
         close P;
@@ -121,7 +126,6 @@ sub show_repo {
 	# List for task packages by task number or canonical form `task <number>`
 	if( $all =~ /^(\d+|task)$/ ) {
 		$all = shift if $all =~ /^task$/;
-		die "Missing or wrong task number" if ! defined $all or ! $all =~ /^(\d+)$/;
 		print join( "",get_task_content( $all ) );
 	} else {
 		print get_repos( $all );
@@ -303,7 +307,7 @@ sub add_repo {
 
 	}
 
-	exit 0;
+	exit 0 if ! $continues;
 }
 
 # Remove repository from list
@@ -382,12 +386,36 @@ sub clear_repo {
 	@cmd = qw(rm all tasks);
 	rm_repo( @cmd );
 
-	exit 0;
+	exit 0 if ! $continues;
 }
 
 # Update repo
 sub update_repo {
 	system 'apt-get update';
+	exit 0 if ! $continues;
+}
+
+# Test task
+sub test_task {
+	shift;
+	my $task = shift;
+	my @pkgs = ();
+	my $list = "";
+
+	$task = shift if $task =~ /^task$/;
+	@pkgs = get_task_content( $task );
+
+	# Add source and update indices
+	$continues = 1;
+	add_repo( ("add", "task", $task ) );
+	update_repo();
+
+	# Install all packages from task (except *-debuginfo)
+	chomp( @pkgs );
+	$list = join( " ", @pkgs );
+
+	system "apt-get install $list";
+
 	exit 0;
 }
 
@@ -400,6 +428,7 @@ show_usage() if $cmd =~ /-(h|-help)$/ or scalar @ARGV == 0;
 show_version() if $cmd =~ /-(v|-version)$/;
 clear_repo( @ARGV ) if $cmd =~ /^clea[rn]$/;
 update_repo() if $cmd =~ /^update$/;
+test_task( @ARGV ) if $cmd =~ /^test$/;
 
 # Functions with return
 if( $cmd =~ /^(add|rm)$/ ) {
