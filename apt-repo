@@ -60,7 +60,7 @@ Usage: apt-repo COMMAND SOURCE
 Manipulate APT repository list.
 
 COMMANDS:
-  list [-a]        List active or all repositories
+  list [-a|<task_number>|task <task_number>]  List active or all repositories or task package list
   add <source>     Add APT repository
   rm <source|all>  Remove APT repository
   clean            Remove all cdrom and task sources
@@ -102,12 +102,30 @@ sub get_repos {
 	return $output;
 }
 
+# Get package list for task
+sub get_task_content {
+	my $task = shift;
+	my @out = ();
+
+	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -v '\\-debuginfo\$' | sort ";
+        @out = <P>;
+        close P;
+	return @out;
+}
+
 # Show repositories
 sub show_repo {
 	shift;
 	my $all = shift;
 
-	print get_repos( $all );
+	# List for task packages by task number or canonical form `task <number>`
+	if( $all =~ /^(\d+|task)$/ ) {
+		$all = shift if $all =~ /^task$/;
+		die "Missing or wrong task number" if ! defined $all or ! $all =~ /^(\d+)$/;
+		print join( "",get_task_content( $all ) );
+	} else {
+		print get_repos( $all );
+	}
 	
 	exit 0;
 }
