@@ -8,7 +8,7 @@
 .\" version 3 or later.
 .\"
 .Os Linux
-.Dd "August 30, 2013"
+.Dd "November 06, 2013"
 .ds volume-operating-system Linux
 .Dt apt\-repo 8
 .\"
@@ -21,6 +21,10 @@
 .Op list
 .Op Fl a
 .Nm apt\-repo
+list
+.Op task
+.Ar id
+.Nm apt\-repo
 add
 .Ar source
 .Nm apt\-repo
@@ -31,6 +35,10 @@ rm
 clean
 .Nm apt\-repo
 update
+.Nm apt\-repo
+test
+.Op task
+.Ar id
 .Nm apt\-repo
 .Op Fl h
 .Op Fl v
@@ -57,6 +65,10 @@ format. If
 is specified all available repositories are displayed (inactive are commended by
 .Ql #
 ).
+.It list [task] Ar id
+Show names of all available packages (except *-debuginfo) in specified by
+.Ar id
+task repository.
 .It add Ar source
 Add
 .Ar source
@@ -91,6 +103,10 @@ Run
 to update
 .Tn APT
 cache from active repositories.
+.It test [task] Ar id
+Install all available packages (except *-debuginfo) from specified by 
+.Ar id
+task repository.
 .It Fl h Fl \-help
 Print usage information and quit.
 .It Fl v Fl \-version
