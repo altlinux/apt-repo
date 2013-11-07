@@ -36,22 +36,22 @@ my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
 my %repo_keys = ( 
-          'Sisyphus' => 'alt' );
+	'Sisyphus' => 'alt' );
 my @branches  = (
-		  '4.0',
-		  '4.1',
-		  '5.0',
-		  'p5',
-		  '5.1',
-		  'c6',
-		  'p6',
-		  't6',
-		  'p7',
-		  't7',
-		  'c7',
-		  'sisyphus',
-		  'Sisyphus'
-		);
+	'4.0',
+	'4.1',
+	'5.0',
+	'p5',
+	'5.1',
+	'c6',
+	'p6',
+	't6',
+	'p7',
+	't7',
+	'c7',
+	'sisyphus',
+	'Sisyphus'
+);
 my $default_key = 'updates';
 
 # Show usage information
@@ -73,7 +73,7 @@ COMMANDS:
 
 <source> may be branch or task name, sources.list(5) string, URL or local path.
 HELP
-    exit 0;
+	exit 0;
 }
 
 # Show version
@@ -101,7 +101,7 @@ sub get_repos {
 		close P;
 		$output .= join( "", @out );
 	}
-	
+
 	return $output;
 }
 
@@ -113,8 +113,8 @@ sub get_task_content {
 	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
 	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -v '\\-debuginfo\$' | sort ";
-        @out = <P>;
-        close P;
+	@out = <P>;
+	close P;
 	return @out;
 }
 
@@ -130,7 +130,7 @@ sub show_repo {
 	} else {
 		print get_repos( $all );
 	}
-	
+
 	exit 0;
 }
 
@@ -140,16 +140,16 @@ sub get_url {
 	my $object = shift;
 	my @url    = @_;
 	my $u;
-    my @branch_source;
-	
+	my @branch_source;
+
 	defined $repo or die "Unknown source. See `man apt-repo` for details.";
-	
+
 	# Quick forms: known branch name or number for task
 	if( grep( /^\Q$repo\E$/, @branches ) ) {
 		$object = $repo;		
 		$repo = 'branch';
 	}
-	
+
 	if( $repo =~ /^[0-9]+$/ ) {
 		$object = $repo;		
 		$repo = 'task';
@@ -177,20 +177,20 @@ sub get_url {
 		}
 
 		if( $object =~ /^Sisyphus$/ ) {
-		    # Sisyphus
-		    $u = 'rpm [' . $key . '] ' . $repo_base . $object;
+			# Sisyphus
+			$u = 'rpm [' . $key . '] ' . $repo_base . $object;
 		} else {
-		    $u = 'rpm [' . $key . '] ' . $repo_base . $object . '/branch';
+			$u = 'rpm [' . $key . '] ' . $repo_base . $object . '/branch';
 		}
-		
-        @branch_source = (
-               $u . ' ' . $arch . ' ' . $c_branch,
-               $u . ' ' . $noarch . ' ' . $c_branch
-            );
-        # For x86_64 add Arepo 2.0 source
-        if( $arch =~ /^x86_64$/ ) {
-            push( @branch_source, $u . ' x86_64-i586 ' . $c_branch);
-        }
+
+		@branch_source = (
+			$u . ' ' . $arch . ' ' . $c_branch,
+			$u . ' ' . $noarch . ' ' . $c_branch
+		);
+		# For x86_64 add Arepo 2.0 source
+		if( $arch =~ /^x86_64$/ ) {
+			push( @branch_source, $u . ' x86_64-i586 ' . $c_branch);
+		}
 
 		return @branch_source;
 
@@ -207,7 +207,7 @@ sub get_url {
 			return (
 				'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task,
 				'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task
-				);
+			);
 		} else {
 			return ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
 		}
@@ -217,7 +217,7 @@ sub get_url {
 	if( $repo =~ /^(http|ftp|rsync|file|copy|cdrom):\// ) {
 		my $u = 'rpm ' . $repo;
 		my $component = $c_branch;
-		
+
 		if( defined $object ) {
 			# Architecture is defined
 			return ( $u . ' ' . $object . ' ' . join( ' ', @url ) );
@@ -266,7 +266,7 @@ sub add_repo {
 	foreach my $u ( @urls ) {
 		$a_found = 0;
 		$i_found = 0;
-		
+
 		#print "added $u\n";
 
 		# Lookup active
@@ -323,8 +323,8 @@ sub rm_repo {
 
 	if( defined $repo and $repo =~ /^all$/ ) {
 		# Remove all active sources
-        	open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
-        	@urls = <P>;
+		open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
+		@urls = <P>;
 		close P;
 
 		# Remove repositories by specified type
@@ -334,18 +334,18 @@ sub rm_repo {
 			@urls = grep( /\b\Q$repo_task\E[0-9]+/, @urls ) if( $object =~ /^task(s)?$/ );
 			@urls = grep( /^[[:space:]]*rpm[[:space:]]+cdrom:/, @urls ) if( $object =~ /^cdrom(s)?$/ );
 		}
-		
+
 	} else {
 		@urls = get_url( $repo, $object, @comps );
 	}
 
-    my $has_warning = 0;
+	my $has_warning = 0;
 	foreach my $u ( @urls ) {
 		$a_found = 0;
 		$i_found = 0;
 
 		chomp $u;
-		
+
 		# Lookup active
 		foreach( split( /\n/, get_repos() ) ) {
 			# Check active
@@ -367,10 +367,10 @@ sub rm_repo {
 			system "sed -i -e '/^[[:space:]]*$u\$/d' $conf_main";
 			system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
 		} else {
-            if( not $has_warning ) {
-			    print "Nothing to remove: source was not found.\n";
-                $has_warning = 1;
-            }
+			if( not $has_warning ) {
+				print "Nothing to remove: source was not found.\n";
+				$has_warning = 1;
+			}
 		}
 	}
 	return 0;
@@ -436,11 +436,11 @@ test_task( @ARGV ) if $cmd =~ /^test$/;
 
 # Functions with return
 if( $cmd =~ /^(add|rm)$/ ) {
-    add_repo( @ARGV ) if $cmd =~ /^add$/;
-    rm_repo( @ARGV ) if $cmd =~ /^rm$/;
+	add_repo( @ARGV ) if $cmd =~ /^add$/;
+	rm_repo( @ARGV ) if $cmd =~ /^rm$/;
 } else {
-    print "Unknown command `$cmd`.\nRun `apt-repo --help` for supported commands.\n";
-    exit 1;
+	print "Unknown command `$cmd`.\nRun `apt-repo --help` for supported commands.\n";
+	exit 1;
 }
 
 __END__
