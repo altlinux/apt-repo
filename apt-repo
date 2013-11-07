@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.1.5 2013-08-30 11:53:00 cas Exp $
+# $Id: apt-repo,v 1.2.0 2013-11-07 12:41:00 cas Exp $
 
 # Copyright 2011-2013 by Andrey Cherepanov (cas@altlinux.org)
 
@@ -12,7 +12,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.1.6';
+our $VERSION = '1.2.0';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -124,7 +124,7 @@ sub show_repo {
 	my $all = shift;
 
 	# List for task packages by task number or canonical form `task <number>`
-	if( $all =~ /^(\d+|task)$/ ) {
+	if( defined $all and $all =~ /^(\d+|task)$/ ) {
 		$all = shift if $all =~ /^task$/;
 		print join( "",get_task_content( $all ) );
 	} else {
@@ -414,7 +414,11 @@ sub test_task {
 	chomp( @pkgs );
 	$list = join( " ", @pkgs );
 
+	# Install packages from task repository
 	system "apt-get install $list";
+
+	# Remove task source
+	rm_repo( ("rm", "task", $task ) );
 
 	exit 0;
 }
