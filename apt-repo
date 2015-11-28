@@ -4,6 +4,8 @@
 # $Id: apt-repo,v 1.2.0 2013-11-07 12:41:00 cas Exp $
 
 # Copyright 2011-2013 by Andrey Cherepanov (cas@altlinux.org)
+# Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
+# (imz: support for relying on apt-config and APT_CONFIG)
 
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of GNU General Public License (GPL) version 3 or later.
@@ -12,7 +14,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.2.0';
+our $VERSION = '1.2.1';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -35,6 +37,16 @@ my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
+if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
+    # We are lucky that `apt-config` has the /f and /d "switches" which
+    # make it resolve the configuration parameters into "normalized"
+    # full paths to files and dirs.
+    $conf_main = $1;
+    $conf_list = '';
+    if ( `apt-config shell DIR Dir::Etc::sourceparts/d` =~ /^DIR=(.*)$/ ) {
+	$conf_list = "$1*.list";
+    }
+}
 my %repo_keys = ( 
 	'Sisyphus' => 'alt' );
 my @branches  = (
