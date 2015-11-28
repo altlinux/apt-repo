@@ -30,7 +30,7 @@ chomp $arch; # Truncate carriage return from output
 # arch for x86_32
 $arch = 'i586' if $arch =~ /^i686$/;
 
-# Default repository pathes
+# Default repository paths
 my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
