@@ -6,6 +6,7 @@
 # Copyright 2011-2013 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
 # (imz: support for relying on apt-config and APT_CONFIG)
+# (imz: Support for local --hsh-apt-config=FILE together with hasher.)
 
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of GNU General Public License (GPL) version 3 or later.
@@ -14,7 +15,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.2.1';
+our $VERSION = '1.2.2';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -23,7 +24,14 @@ my $noarch   = 'noarch';
 
 my $cmd      = 'list';
 my $continues = 0;
-
+my $hsh = 0;
+if ( scalar @ARGV > 0 and $ARGV[0] =~ /^--hsh-apt-config=(.*)$/ ) {
+    # Printing is useful for debugging, too:
+    print STDERR "Info: Will use hasher when appropriate (with --apt-config=$1).\n";
+    $ENV{APT_CONFIG} = $1;
+    $hsh = 1;
+    shift;
+}
 $cmd = $ARGV[0] if scalar @ARGV > 0;
 
 # Get system arch
@@ -88,7 +96,7 @@ my $default_key = 'updates';
 # Show usage information
 sub show_usage {
 	print <<"HELP";
-Usage: apt-repo COMMAND SOURCE
+Usage: apt-repo [--hsh-apt-config=FILE] COMMAND SOURCE
 Manipulate APT repository list.
 
 COMMANDS:
@@ -98,7 +106,9 @@ COMMANDS:
   rm <source|all>  Remove APT repository
   clean            Remove all cdrom and task sources
   update           Update APT caches
+                   (Runs `hsh --initroot-only` if `--hsh-apt-config` is given.)
   test [task] <id> Install all packages (except *-debuginfo) from task
+                   (Uses hasher(7) if `--hsh-apt-config` is given.)
   -h, --help       Show help and exit
   -v               Show version and exit
 
@@ -426,7 +436,11 @@ sub clear_repo {
 
 # Update repo
 sub update_repo {
+    if (! $hsh ) {
 	system 'apt-get update';
+    } else {
+	system "hsh --apt-config=\"\$APT_CONFIG\" --initroot-only";
+    }
 	exit 0 if ! $continues;
 }
 
@@ -450,7 +464,11 @@ sub test_task {
 	$list = join( " ", @pkgs );
 
 	# Install packages from task repository
-	system "apt-get install $list";
+	if (! $hsh ) {
+	    system "apt-get install $list";
+	} else {
+	    system "hsh-install $list";
+	}
 
 	# Remove task source
 	rm_repo( ("rm", "task", $task ) );
