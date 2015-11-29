@@ -63,12 +63,10 @@ Show active repositories in
 format. If
 .Fl a
 is specified, all available repositories are displayed (inactive ones are commented by
-.Ql #
-).
+.Ql # ) .
 .It list [task] Ar id
 Show names of all available packages (except *-debuginfo) in a task repository specified by
-.Ar id
-.
+.Ar id .
 .It add Ar source
 Add
 .Ar source
@@ -105,8 +103,7 @@ to update the
 cache from the active repositories.
 .It test [task] Ar id
 Install all available packages (except *-debuginfo) from the task repository specified by
-.Ar id
-.
+.Ar id .
 .It Fl h Fl \-help
 Print usage information and quit.
 .It Fl v Fl \-version
@@ -124,10 +121,9 @@ format:
 Recognized repository types: rpm, rpm-dir and rpm-src. It is allowed to
 specify source as separate words. If trailing architecture and component
 are missing, two lines will be added (current system architecture and
-.Ql noarch
-) with component
-.Ql classic
-.
+.Ql noarch )
+with component
+.Ql classic .
 .Ss "URL"
 .Tn APT
 supports file://, copy://, http://, ftp://, rsync:// and cdrom:// protocols.
@@ -135,8 +131,8 @@ supports file://, copy://, http://, ftp://, rsync:// and cdrom:// protocols.
 with required protocol may be followed by an optional architecture and one or more
 components. If architecture and component are missing, two lines will be added
 (current system architecture and
-.Ql noarch
-) with component
+.Ql noarch )
+with component
 .Ql classic .
 This form is useful to add a branch on a mirror server.
 .Pp
