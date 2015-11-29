@@ -62,17 +62,17 @@ Show active repositories in
 .Xr sources.list 5
 format. If
 .Fl a
-is specified all available repositories are displayed (inactive are commended by
+is specified, all available repositories are displayed (inactive ones are commented by
 .Ql #
 ).
 .It list [task] Ar id
-Show names of all available packages (except *-debuginfo) in specified by
+Show names of all available packages (except *-debuginfo) in a task repository specified by
 .Ar id
-task repository.
+.
 .It add Ar source
 Add
 .Ar source
-to list of active repositories.
+to the list of active repositories.
 .It rm Ar source [<type>]
 Remove or comment
 .Ar source
@@ -100,13 +100,13 @@ Removes all cdrom and task sources.
 .It update
 Run
 .Dl apt\-get update
-to update
+to update the
 .Tn APT
-cache from active repositories.
+cache from the active repositories.
 .It test [task] Ar id
-Install all available packages (except *-debuginfo) from specified by 
+Install all available packages (except *-debuginfo) from the task repository specified by
 .Ar id
-task repository.
+.
 .It Fl h Fl \-help
 Print usage information and quit.
 .It Fl v Fl \-version
@@ -123,7 +123,7 @@ format:
 .Pp
 Recognized repository types: rpm, rpm-dir and rpm-src. It is allowed to
 specify source as separate words. If trailing architecture and component
-are missed two lines will be added (current system architecture and
+are missing, two lines will be added (current system architecture and
 .Ql noarch
 ) with component
 .Ql classic
@@ -132,13 +132,13 @@ are missed two lines will be added (current system architecture and
 .Tn APT
 supports file://, copy://, http://, ftp://, rsync:// and cdrom:// protocols.
 .Tn URL
-with required protocol may trail optional architecture and one or more
-components. If architecture and component are missed two lines will be added
+with required protocol may be followed by an optional architecture and one or more
+components. If architecture and component are missing, two lines will be added
 (current system architecture and
 .Ql noarch
 ) with component
 .Ql classic .
-This form is useful to add branch on mirror server.
+This form is useful to add a branch on a mirror server.
 .Pp
 Example:
 .Pp
@@ -146,7 +146,7 @@ Example:
 .Ss "Absolute Path"
 Local directory beginning with
 .Ql /
-added as
+added as a
 .Xr hasher 7
 repository: with current system architecture and
 .Ql hasher
@@ -154,8 +154,8 @@ component.
 .Pp
 .Dl apt\-repo add /opt/repo
 .Ss "Branch"
-Branch is named repository consist from two parts (current system architecture
-and 'noarch'). By default official server is used. Full form:
+Branch is a named repository consisting of two parts (current system architecture
+and 'noarch'). By default, the official server is used. Full form:
 .Pp
 .Dl apt\-repo add branch <name of branch>
 .Pp
@@ -165,14 +165,14 @@ may be omitted. Example:
 .Pp
 .Dl apt\-repo add p7
 .Pp
-Run
+Running
 .Dl apt\-repo add branch
 .Pp
-without name of branch displays all available branch names.
+without the name of a branch displays all available branch names.
 .Ss "Task"
-Task is small repository for one or more subtask built in http://git.altlinux.org
-infrastructure. This source is used to install software for test purpose.
-Any task has unique number. Full form:
+Task is a small repository for one or more subtasks built in http://git.altlinux.org
+infrastructure. This source is used to install software for test purposes.
+Any task has a unique number. Full form:
 .Pp
 .Dl apt\-repo add task <number of task>
 .Pp

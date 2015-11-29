@@ -292,17 +292,17 @@ sub add_repo {
 
 		#print "added $u\n";
 
-		# Lookup active
+		# Lookup active ones
 		foreach( split( /\n/, get_repos( '-a' ) ) ) {
-			# Check active
+			# Check active ones
 			if( /^\Q$u\E$/ ) {
 				# This source is active 
 				$a_found = 1;
 				last;
 			}
-			# Check commented
+			# Check commented ones
 			if( /^[[:space:]]*#[[:space:]]*\Q$u\E$/ ) {
-				# This source is exist and commented
+				# This source is existing and commented
 				$i_found = 1;
 				last;
 			}
