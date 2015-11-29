@@ -37,14 +37,21 @@ my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
+# If APT is missing in the system, we use the common defaults above.
+# Otherwise, we get the paths from APT itself:
+# (if `apt-config` is missing, the pattern below won't match.)
 if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
     # We are lucky that `apt-config` has the /f and /d "switches" which
     # make it resolve the configuration parameters into "normalized"
     # full paths to files and dirs.
-    $conf_main = $1;
+
+    # $1 is a string quoted for the shell (with quotation marks around it).
+    # Therefore we rely on shell itself to print it cleanly:
+    $conf_main = `echo -nE $1`;
+    # Invalidate the default because we want consistent values from `apt-config`: 
     $conf_list = '';
     if ( `apt-config shell DIR Dir::Etc::sourceparts/d` =~ /^DIR=(.*)$/ ) {
-	$conf_list = "$1*.list";
+	$conf_list = "`echo -nE $1`*.list";
     }
 }
 my %repo_keys = ( 
