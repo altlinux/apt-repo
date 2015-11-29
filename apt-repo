@@ -91,6 +91,10 @@ COMMANDS:
   -v               Show version and exit
 
 <source> may be branch or task name, sources.list(5) string, URL or local path.
+
+The files to be manipulated are determined by a call to apt-config(8).
+Consequently, APT_CONFIG environment variable can be used to point
+to arbitrary non-system configurations for APT.
 HELP
 	exit 0;
 }
