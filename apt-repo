@@ -251,7 +251,7 @@ sub get_url {
 			print "Task number is missed.\n";
 			exit 1;
 		}
-		if( $arch =~ /^x86_64$/ ) {
+		if( $arch =~ /^x86_64$/ and ( not defined $ENV{NO_TASK_AREPO_HACK} or $ENV{NO_TASK_AREPO_HACK} eq '' ) ) {
 			# Arepo source for x86_64
 			return (
 				'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task,
