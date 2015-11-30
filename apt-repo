@@ -37,7 +37,7 @@ my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
-# If APT is missing in the system, we use the common defaults above.
+# If APT is missing in the system, we fallback to the common defaults above.
 # Otherwise, we get the paths from APT itself:
 # (if `apt-config` is missing, the pattern below won't match.)
 if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
@@ -52,7 +52,11 @@ if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
     $conf_list = '';
     if ( `apt-config shell DIR Dir::Etc::sourceparts/d` =~ /^DIR=(.*)$/ ) {
 	$conf_list = `echo -nE $1` . "*.list";
+    } else {
+	print STDERR "Warning: Getting Dir::Etc::sourceparts/d from `apt-config` went wrong; falling back to '$conf_list' instead.\n"
     }
+} else {
+    print STDERR "Warning: Getting Dir::Etc::sourcelist/f from `apt-config` went wrong; falling back to '$conf_main' instead.\n"
 }
 my %repo_keys = ( 
 	'Sisyphus' => 'alt' );
