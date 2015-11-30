@@ -51,7 +51,7 @@ if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
     # Invalidate the default because we want consistent values from `apt-config`: 
     $conf_list = '';
     if ( `apt-config shell DIR Dir::Etc::sourceparts/d` =~ /^DIR=(.*)$/ ) {
-	$conf_list = "`echo -nE $1`*.list";
+	$conf_list = `echo -nE $1` . "*.list";
     }
 }
 my %repo_keys = ( 
