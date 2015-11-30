@@ -117,6 +117,10 @@ COMMANDS:
 The files to be manipulated are determined by a call to apt-config(8).
 Consequently, APT_CONFIG environment variable can be used to point
 to arbitrary non-system configurations for APT.
+
+There is a switch for the special case when you want to use hasher(7) together
+with a local APT configuration: --hsh-apt-config=FILE.
+Note that no tilde expansion is performed on FILE!
 HELP
 	exit 0;
 }
