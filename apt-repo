@@ -37,6 +37,14 @@ my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
+if ( defined $ENV{APT_CONFIG} ) {
+    # The following expression is intentionally crazily complex,
+    # because we want to debug how children see the environment variable.
+    print STDERR 'Info: will try to read a non-system APT_CONFIG=' . `echo -nE "\$APT_CONFIG"` . "\n";
+    if ( $ENV{APT_CONFIG} =~ /^~/ ) {
+	print STDERR 'Warning: your APT_CONFIG begins with ~, but no tilde expansion will take place!' . "\n";
+    }
+}
 # If APT is missing in the system, we fallback to the common defaults above.
 # Otherwise, we get the paths from APT itself:
 # (if `apt-config` is missing, the pattern below won't match.)
