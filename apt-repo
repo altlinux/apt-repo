@@ -440,12 +440,17 @@ sub clear_repo {
 
 # Update repo
 sub update_repo {
+    my $error_code = 0;
     if (! $hsh ) {
-	system 'apt-get update';
+	$error_code = system 'apt-get update';
     } else {
-	system "hsh --apt-config=\"\$APT_CONFIG\" --initroot-only";
+	$error_code = system "hsh --apt-config=\"\$APT_CONFIG\" --initroot-only";
     }
-	exit 0 if ! $continues;
+    if ( $error_code ) {
+	warn 'The "update" command has not completed successfully';
+    }
+    exit $error_code if ! $continues;
+    return !$error_code;
 }
 
 # Test task
@@ -461,7 +466,10 @@ sub test_task {
 	# Add source and update indices
 	$continues = 1;
 	add_repo( ("add", "task", $task ) );
-	update_repo();
+	if ( update_repo() or ! $hsh ) {
+	    # `hsh --initroot-only` is particularly fragile,
+	    # so if we are using hsh and if the "update" command
+	    # hasn't completed successfully, we abort.
 
 	# Install all packages from task (except *-debuginfo)
 	chomp( @pkgs );
@@ -472,6 +480,8 @@ sub test_task {
 	    system "apt-get install $list";
 	} else {
 	    system "hsh-install $list";
+	}
+
 	}
 
 	# Remove task source
