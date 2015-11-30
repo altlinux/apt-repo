@@ -3,12 +3,13 @@
 .\" Man page for the apt-repo program.
 .\"
 .\" Copyright (c) 2011-2013 Andrey Cherepanov <cas@altlinux.org>
+.\" Copyright (c) 2015 Ivan Zakharyaschev <imz@altlinux.org>
 .\"
 .\" This software is distributed under the GNU General Public License (GPL)
 .\" version 3 or later.
 .\"
 .Os Linux
-.Dd November 06, 2013
+.Dd November 29, 2015
 .ds volume-operating-system Linux
 .Dt apt\-repo 8
 .\"
@@ -55,6 +56,28 @@ in
 format, an
 .Tn URL
 with optional component, a branch name, or a task number.
+.Pp
+Since
+.Nm
+relies internally on
+.Xr apt-config 8
+to find the files which contain the repository lists,
+it can be asked to manipulate arbitrary non-system APT sources.list by
+setting
+.Ev APT_CONFIG ,
+which is a standard environment variable looked into by APT to
+find its configuration.
+Example:
+.Pp
+.Dl APT_CONFIG=~/.hasher/apt-extra.conf apt\-repo add p7
+.Pp
+will manipulate the repository lists in the files defined (if any) in
+.Pa ~/.hasher/apt-extra.conf .
+This can be useful, for example, to manipulate a user's local
+.Xr hasher 7
+configuration.
+(Such configurations are described in more detail at https://www.altlinux.org/Hasher/Tips.)
+.\"
 .Sh OPTIONS
 .Bl -tag -width Ds
 .It list
@@ -177,6 +200,28 @@ Keyword
 may be omitted. Example:
 .Pp
 .Dl apt\-repo add 39115
+.\"
+.Sh FILES
+.Bl -tag -width -indent -compact
+.It Pa /etc/apt/sources.list
+The main list of repositories which APT reads. New repositiories are
+added here (and, in this case, if it doesn't exist, then it is
+created).
+.It Pa /etc/apt/sources.list.d/*.list
+The additional lists which APT reads.
+.It Pa /etc/apt/apt.conf
+.It Pa /etc/apt/apt.conf.d/*.conf
+The system APT configuration which may override the above default
+paths for sources.list(.d).
+.El
+.\"
+.Sh ENVIRONMENT VARIABLES
+.Bl -tag -width -indent -compact
+.It Ev APT_CONFIG
+This value overrides the default place where APT looks for apt.conf.
+Setting it allows one to manipulate arbitrary user's non-system
+sources.list by preparing a custom apt.conf (e.g., for hasher).
+.El
 .\"
 .Sh "SEE ALSO"
 .Xr sources.list 5 ,
