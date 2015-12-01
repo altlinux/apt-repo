@@ -447,9 +447,12 @@ sub update_repo {
 	$error_code = system "hsh --apt-config=\"\$APT_CONFIG\" --initroot-only";
     }
     if ( $error_code ) {
-	warn 'The "update" command has not completed successfully';
+	warn 'Error: The "update" command has not completed successfully';
     }
     exit $error_code if ! $continues;
+    if ( $error_code ) {
+	warn 'Hint: If your task lacks an x86_64-i586 repo, run with NO_TASK_AREPO_HACK=yes';
+    }
     return !$error_code;
 }
 
