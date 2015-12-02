@@ -444,7 +444,14 @@ sub update_repo {
     if (! $hsh ) {
 	$error_code = system 'apt-get update';
     } else {
-	$error_code = system "hsh --apt-config=\"\$APT_CONFIG\" --initroot-only";
+	# Normally, hsh --initroot-only prepares an environment with rpm-build etc. (for building packages).
+	# Instead, here, we do as girar's install check does, which prepares a smaller minimal system:
+	# http://git.altlinux.org/people/ldv/packages/?p=girar.git;a=blob;f=gb/remote/gb-remote-check-install;h=e7823af17cdfc68369f5782a8cdbac18e581adb7;hb=1535653ca9923ea8cd228ae68b2ca7c1b80eba7e#l41
+	# This would allow us to reproduce the bugs that happen in girar's install check, like that one: https://bugzilla.altlinux.org/show_bug.cgi?id=31576 .
+	# TODO:
+	# The difference is that girar explicitly knows that target repo branch (like Sisyphus, p7, etc.), and hence is able to use an explicit altlinux-release-sisyphus package.
+	# We simply rely on the virtual package. (Which is not very nice, because it can install a different special package.)
+	$error_code = system "hsh --apt-config=\"\$APT_CONFIG\" --initroot-only --pkg-init-list=+altlinux-release --pkg-build-list=altlinux-release,basesystem";
     }
     if ( $error_code ) {
 	warn 'Error: The "update" command has not completed successfully';
