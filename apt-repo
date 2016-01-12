@@ -41,7 +41,7 @@ chomp $arch; # Truncate carriage return from output
 $arch = 'i586' if $arch =~ /^i686$/;
 
 # Default repository paths
-my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux/';
+my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
@@ -75,21 +75,24 @@ if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
     warn "Warning: Getting Dir::Etc::sourcelist/f from `apt-config` went wrong; falling back to '$conf_main' instead."
 }
 my %repo_keys = ( 
-	'Sisyphus' => 'alt' );
-my @branches  = (
-	'4.0',
-	'4.1',
-	'5.0',
-	'p5',
-	'5.1',
-	'c6',
-	'p6',
-	't6',
-	'p7',
-	't7',
-	'c7',
-	'sisyphus',
-	'Sisyphus'
+	'sisyphus' => 'alt',
+	'Sisyphus' => 'alt'
+);
+
+my %branches  = (
+	'4.0' => "$repo_base/4.0/branch",
+	'4.1' => "$repo_base/4.1/branch",
+	'5.0' => "$repo_base/5.0/branch",
+	'p5'  => "$repo_base/p5/branch",
+	'5.1' => "$repo_base/5.1/branch",
+	'p6'  => "$repo_base/p6/branch",
+	't6'  => "$repo_base/t6/branch",
+	'c6'  => "$repo_base/c6/branch",
+	'p7'  => "$repo_base/p7/branch",
+	't7'  => "$repo_base/t7/branch",
+	'c7'  => "$repo_base/c7/branch",
+	'sisyphus' => "$repo_base/Sisyphus",
+	'Sisyphus' => "$repo_base/Sisyphus"
 );
 my $default_key = 'updates';
 
@@ -188,13 +191,14 @@ sub get_url {
 	my $repo   = shift;
 	my $object = shift;
 	my @url    = @_;
-	my $u;
+	my $u = '';
+	my $k;
 	my @branch_source;
 
 	defined $repo or die "Unknown source. See `man apt-repo` for details.";
 
 	# Quick forms: known branch name or number for task
-	if( grep( /^\Q$repo\E$/, @branches ) ) {
+	if( exists $branches{ $repo } ) {
 		$object = $repo;		
 		$repo = 'branch';
 	}
@@ -206,36 +210,29 @@ sub get_url {
 
 	# Branch 	
 	if( $repo =~ /^branch$/ ) {
+		# Branch list
 		if ( not defined $object )  {
 			# Show all available branch names
-			foreach( @branches ) {
-				print $_ . "\n";
+			foreach $k (keys %branches) {
+				print $k . "\n";
 			}
 			exit 0;
 		}
-		my $key = $object;
 
-		# Fix Sisyphus name
-		$object = 'Sisyphus' if $object =~ /^sisyphus$/;
+		# Branch key
+		my $key = $default_key;
+		# Fix Sisyphus key
+		$key = $repo_keys{ $object } if exists( $repo_keys{ $object } );
 
-		# Fix keys
-		if( exists( $repo_keys{ $object } ) ) {
-			$key = $repo_keys{ $object };
-		} else {
-			$key = $default_key;
-		}
+		# URL for branch
+		$u = 'rpm [' . $key . '] ' . $branches{ $object } if exists $branches{ $object };
 
-		if( $object =~ /^Sisyphus$/ ) {
-			# Sisyphus
-			$u = 'rpm [' . $key . '] ' . $repo_base . $object;
-		} else {
-			$u = 'rpm [' . $key . '] ' . $repo_base . $object . '/branch';
-		}
-
+		# Sources list
 		@branch_source = (
 			$u . ' ' . $arch . ' ' . $c_branch,
 			$u . ' ' . $noarch . ' ' . $c_branch
 		);
+
 		# For x86_64 add Arepo 2.0 source
 		if( $arch =~ /^x86_64$/ ) {
 			push( @branch_source, $u . ' x86_64-i586 ' . $c_branch);
