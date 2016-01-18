@@ -33,7 +33,7 @@ gzip %buildroot%_man8dir/%name.8
 %files -f %name.lang
 %doc TODO
 %_bindir/%name
-%doc %_man8dir/%name.8.gz
+%_man8dir/%name.8*
 
 %changelog
 * Wed Dec 02 2015 Ivan Zakharyaschev <imz@altlinux.org> 1.2.4-alt1
