@@ -159,7 +159,7 @@ sub get_task_content {
 
 	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
-	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -v '\\-debuginfo\$' | sort ";
+	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -v '\\-debuginfo\$' | sort -u";
 	@out = <P>;
 	close P;
 	return @out;
