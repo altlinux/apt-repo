@@ -129,26 +129,40 @@ sub show_version {
 	exit 0;
 }
 
+# Return array of file names with sources
+sub get_source_files {
+	my $dir;
+	my @files = ();
+
+	# Build files list
+	push @files, $conf_main if -e $conf_main;
+	$dir = substr( $conf_list, 0, -6 );
+	opendir( DIR, substr( $conf_list, 0, -6 ) );
+	foreach my $name (sort readdir( DIR )) {
+		push @files, $dir . $name if $name =~ /\.list$/;
+	}
+	closedir( DIR );
+	return @files;
+}
+
 # Return list of repositories as text
 sub get_repos {
 	my $all = shift;
 	my @out = ();
-	my $output;
+	my $output = '';
+	my $name;
 
-	# Show all active repositories
-	open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
-	@out = <P>;
-	close P;
-	$output = join( "", @out );
-
-	# On -a show all available commented repositories
-	if( defined $all and $all =~ /^-a$/ ) {
-		open P, '-|', "egrep -h '^[[:space:]]*#[[:space:]]*$type(-src|-dir)? '  $conf_main $conf_list";
-		@out = <P>;
-		close P;
-		$output .= join( "", @out );
+	# Iterate through @files
+	foreach $name ( get_source_files() ) {
+		open(my $file, "<", $name) or warn "Can't open file '$name'";
+		while( my $l = <$file> ) {
+			# Show all active repositories
+			$output .= $l if $l =~ /^[[:space:]]*$type(-src|-dir)?[[:space:]]+/;
+			# On -a show all available commented repositories
+			$output .= $l if defined $all and $all =~ /^-a$/ and $l =~ /^[[:space:]]*#[[:space:]]*$type(-src|-dir)? /;
+		}
+		close( $file );
 	}
-
 	return $output;
 }
 
