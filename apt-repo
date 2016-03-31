@@ -74,27 +74,22 @@ if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
 } else {
     warn "Warning: Getting Dir::Etc::sourcelist/f from `apt-config` went wrong; falling back to '$conf_main' instead."
 }
-my %repo_keys = ( 
-	'sisyphus' => 'alt',
-	'Sisyphus' => 'alt'
-);
 
 my %branches  = (
-	'4.0' => "$repo_base/4.0/branch",
-	'4.1' => "$repo_base/4.1/branch",
-	'5.0' => "$repo_base/5.0/branch",
-	'p5'  => "$repo_base/p5/branch",
-	'5.1' => "$repo_base/5.1/branch",
-	'p6'  => "$repo_base/p6/branch",
-	't6'  => "$repo_base/t6/branch",
-	'c6'  => "$repo_base/c6/branch",
-	'p7'  => "$repo_base/p7/branch",
-	't7'  => "$repo_base/t7/branch",
-	'c7'  => "$repo_base/c7/branch",
-	'sisyphus' => "$repo_base/Sisyphus",
-	'Sisyphus' => "$repo_base/Sisyphus"
+	'4.0' => [ "$repo_base/4.0/branch", "updates" ],
+	'4.1' => [ "$repo_base/4.1/branch", "updates" ],
+	'5.0' => [ "$repo_base/5.0/branch", "updates" ],
+	'p5'  => [ "$repo_base/p5/branch",  "updates" ],
+	'5.1' => [ "$repo_base/5.1/branch", "updates" ],
+	'p6'  => [ "$repo_base/p6/branch",  "updates" ],
+	't6'  => [ "$repo_base/t6/branch",  "updates" ],
+	'c6'  => [ "$repo_base/c6/branch",  "updates" ],
+	'p7'  => [ "$repo_base/p7/branch",  "updates" ],
+	't7'  => [ "$repo_base/t7/branch",  "updates" ],
+	'c7'  => [ "$repo_base/c7/branch",  "updates" ],
+	'sisyphus' => [ "$repo_base/Sisyphus", "alt" ],
+	'Sisyphus' => [ "$repo_base/Sisyphus", "alt" ]
 );
-my $default_key = 'updates';
 
 # Show usage information
 sub show_usage {
@@ -213,31 +208,30 @@ sub get_url {
 		# Branch list
 		if ( not defined $object )  {
 			# Show all available branch names
-			foreach $k (keys %branches) {
+			foreach $k (sort keys %branches) {
 				print $k . "\n";
 			}
 			exit 0;
 		}
 
-		# Branch key
-		my $key = $default_key;
-		# Fix Sisyphus key
-		$key = $repo_keys{ $object } if exists( $repo_keys{ $object } );
-
 		# URL for branch
-		$u = 'rpm [' . $key . '] ' . $branches{ $object } if exists $branches{ $object };
+		if( exists $branches{ $object } ) {
+			$u = 'rpm [' . $branches{ $object }[1] . '] ' . $branches{ $object }[0];
 
-		# Sources list
-		@branch_source = (
-			$u . ' ' . $arch . ' ' . $c_branch,
-			$u . ' ' . $noarch . ' ' . $c_branch
-		);
+			# Sources list
+			@branch_source = (
+				$u . ' ' . $arch . ' ' . $c_branch,
+				$u . ' ' . $noarch . ' ' . $c_branch
+			);
 
-		# For x86_64 add Arepo 2.0 source
-		if( $arch =~ /^x86_64$/ ) {
-			push( @branch_source, $u . ' x86_64-i586 ' . $c_branch);
+			# For x86_64 add Arepo 2.0 source
+			if( $arch =~ /^x86_64$/ ) {
+				push( @branch_source, $u . ' x86_64-i586 ' . $c_branch);
+			}
+		} else {
+			print "Unknown branch name '$object'\n";
+			exit 1;
 		}
-
 		return @branch_source;
 
 	}
