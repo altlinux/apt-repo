@@ -148,8 +148,7 @@ sub get_source_files {
 # Return list of repositories as text
 sub get_repos {
 	my $all = shift;
-	my @out = ();
-	my $output = '';
+	my @output = ();
 	my $name;
 
 	# Iterate through @files
@@ -157,13 +156,13 @@ sub get_repos {
 		open(my $file, "<", $name) or warn "Can't open file '$name'";
 		while( my $l = <$file> ) {
 			# Show all active repositories
-			$output .= $l if $l =~ /^[[:space:]]*$type(-src|-dir)?[[:space:]]+/;
+			push( @output, $l ) if $l =~ /^[[:space:]]*$type(-src|-dir)?[[:space:]]+/;
 			# On -a show all available commented repositories
-			$output .= $l if defined $all and $all =~ /^-a$/ and $l =~ /^[[:space:]]*#[[:space:]]*$type(-src|-dir)? /;
+			push( @output, $l ) if defined $all and $all =~ /^-a$/ and $l =~ /^[[:space:]]*#[[:space:]]*$type(-src|-dir)? /;
 		}
 		close( $file );
 	}
-	return $output;
+	return @output;
 }
 
 # Get package list for task
@@ -324,7 +323,8 @@ sub add_repo {
 		#print "added $u\n";
 
 		# Lookup active ones
-		foreach( split( /\n/, get_repos( '-a' ) ) ) {
+		foreach( get_repos( '-a' ) ) {
+			chomp;
 			# Check active ones
 			if( /^\Q$u\E$/ ) {
 				# This source is active 
@@ -377,9 +377,7 @@ sub rm_repo {
 
 	if( defined $repo and $repo =~ /^all$/ ) {
 		# Remove all active sources
-		open P, '-|', "egrep -h '^[[:space:]]*$type(-src|-dir)?[[:space:]]+'  $conf_main $conf_list";
-		@urls = <P>;
-		close P;
+		@urls = get_repos();
 
 		# Remove repositories by specified type
 		if( defined $object ) {
@@ -401,7 +399,8 @@ sub rm_repo {
 		chomp $u;
 
 		# Lookup active
-		foreach( split( /\n/, get_repos() ) ) {
+		foreach( get_repos() ) {
+			chomp;
 			# Check active
 			if( /^\Q$u\E$/ ) {
 				# This source is active 
