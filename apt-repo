@@ -76,20 +76,25 @@ if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
 }
 
 my %branches  = (
-	'4.0' => [ "$repo_base/4.0/branch", "updates" ],
-	'4.1' => [ "$repo_base/4.1/branch", "updates" ],
-	'5.0' => [ "$repo_base/5.0/branch", "updates" ],
-	'p5'  => [ "$repo_base/p5/branch",  "updates" ],
-	'5.1' => [ "$repo_base/5.1/branch", "updates" ],
-	'p6'  => [ "$repo_base/p6/branch",  "updates" ],
-	't6'  => [ "$repo_base/t6/branch",  "updates" ],
-	'c6'  => [ "$repo_base/c6/branch",  "updates" ],
-	'p7'  => [ "$repo_base/p7/branch",  "updates" ],
-	't7'  => [ "$repo_base/t7/branch",  "updates" ],
-	'c7'  => [ "$repo_base/c7/branch",  "updates" ],
-	'p8'  => [ "$repo_base/p8/branch",  "updates" ],
-	'sisyphus' => [ "$repo_base/Sisyphus", "alt" ],
-	'Sisyphus' => [ "$repo_base/Sisyphus", "alt" ]
+	'4.0' => [ "$repo_base/4.0/branch", "updates", "classic" ],
+	'4.1' => [ "$repo_base/4.1/branch", "updates", "classic" ],
+	'5.0' => [ "$repo_base/5.0/branch", "updates", "classic" ],
+	'p5'  => [ "$repo_base/p5/branch",  "updates", "classic" ],
+	'5.1' => [ "$repo_base/5.1/branch", "updates", "classic" ],
+	'p6'  => [ "$repo_base/p6/branch",  "updates", "classic" ],
+	't6'  => [ "$repo_base/t6/branch",  "updates", "classic" ],
+	'c6'  => [ "$repo_base/c6/branch",  "updates", "classic" ],
+	'p7'  => [ "$repo_base/p7/branch",  "updates", "classic" ],
+	't7'  => [ "$repo_base/t7/branch",  "updates", "classic" ],
+	'c7'  => [ "$repo_base/c7/branch",  "updates", "classic" ],
+	'p8'  => [ "$repo_base/p8/branch",  "updates", "classic" ],
+	'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
+	'Sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
+	'altlinuxclub.sisyphus' => [ "http://altlinuxclub.ru/repo/repo_s/",  "", "hasher" ],
+	'altlinuxclub.p7'  => [ "http://altlinuxclub.ru/repo/Repo_P7/", "", "hasher" ],
+	'altlinuxclub.p6'  => [ "http://altlinuxclub.ru/repo/Repo_P6/", "", "hasher" ],
+	'altlinuxclub.p5'  => [ "http://altlinuxclub.ru/repo/Repo_P5/", "", "hasher" ],
+	'altlinuxclub.4.0' => [ "http://altlinuxclub.ru/repo/Repo_4/",  "", "hasher" ]
 );
 
 # Show usage information
@@ -230,22 +235,34 @@ sub get_url {
 
 		# URL for branch
 		if( exists $branches{ $object } ) {
-			$u = 'rpm [' . $branches{ $object }[1] . '] ' . $branches{ $object }[0];
+			my $key = '';
+			my $farch = $arch;
+			my $altlinuxclub = 0;
+			my $url = $branches{ $object }[0];
+
+			$altlinuxclub = 1 if $url =~ /^http\:\/\/altlinuxclub\.ru/;
+
+			# Hack $arch for altlinuxclub.ru
+			$farch = 'i686' if $altlinuxclub and $arch eq 'i586';
+
+			if( $branches{ $object }[1] ne "" ) {
+				$key = '[' . $branches{ $object }[1] . '] ';
+			}
+			$u = 'rpm ' . $key . $url;
 
 			# Sources list
-			@branch_source = (
-				$u . ' ' . $arch . ' ' . $c_branch,
-				$u . ' ' . $noarch . ' ' . $c_branch
-			);
+			@branch_source = ( $u . ' ' . $farch . ' ' . $branches{ $object }[2] );
+			push( @branch_source, $u . ' ' . $noarch . ' ' . $branches{ $object }[2] ) if not $altlinuxclub;
 
 			# For x86_64 add Arepo 2.0 source
-			if( $arch =~ /^x86_64$/ ) {
-				push( @branch_source, $u . ' x86_64-i586 ' . $c_branch);
+			if( $farch eq 'x86_64' and not $altlinuxclub ) {
+				push( @branch_source, $u . ' x86_64-i586 ' . $branches{ $object }[2] );
 			}
 		} else {
 			print "Unknown branch name '$object'\n";
 			exit 1;
 		}
+		#print join("\n", @branch_source), "\n";
 		return @branch_source;
 
 	}
