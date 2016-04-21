@@ -308,6 +308,7 @@ sub add_repo {
 	my @comps  = @_;
 	my $a_found;
 	my $i_found;
+	my @c = ();
 
 	my @urls = get_url( $repo, $object, @comps );
 
@@ -344,21 +345,27 @@ sub add_repo {
 		# Process source
 		next if $a_found; # Source is active, nothing do
 
-		# Uncomment commented source
 		if( $i_found ) {
+			# Uncomment commented source
 			my $ur = quotemeta $u;
-			# Unescape parenthesis in sources for correct sed work
-			$ur =~ s/\\\(/(/;
-			$ur =~ s/\\\)/)/;
-			system "sed -i 's/^[[:space:]]*#[[:space:]]*\\($ur\\)\$/\\1/' $conf_main $conf_list";
+			# Iterate through config files
+			foreach my $name ( get_source_files() ) {
+				open( FILE, "<", $name ); @c = ( <FILE> ); close FILE;
+				foreach ( @c ) {
+					s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
+				}
+				if ( open( FILE, ">", $name ) != 0 ) {
+					print FILE @c;
+					close FILE;
+				}
+			}
 			next;
+		} else {
+			# Append to main sources list file
+			open CONFIG, '>>', "$conf_main" or die "Can't open $conf_main: $!";
+			print CONFIG $u . "\n";
+			close CONFIG;
 		}
-
-		# Append to main sources list file
-		open CONFIG, '>>', "$conf_main" or die "Can't open $conf_main: $!";
-		print CONFIG $u . "\n";
-		close CONFIG;
-
 	}
 
 	exit 0 if ! $continues;
@@ -372,6 +379,7 @@ sub rm_repo {
 	my @comps  = @_;
 	my $a_found;
 	my $i_found;
+	my @c = ();
 
 	my @urls;
 
@@ -391,7 +399,6 @@ sub rm_repo {
 		@urls = get_url( $repo, $object, @comps );
 	}
 
-	my $has_warning = 0;
 	foreach my $u ( @urls ) {
 		$a_found = 0;
 		$i_found = 0;
@@ -414,15 +421,20 @@ sub rm_repo {
 		# Remove from $conf_main, comment in other files
 		if( $a_found ) {
 			$u = quotemeta $u;
-			# Unescape parenthesis in sources for correct sed work
-			$u =~ s/\\\(/(/;
-			$u =~ s/\\\)/)/;
-			system "sed -i -e '/^[[:space:]]*$u\$/d' $conf_main";
-			system "sed -i 's/^[[:space:]]*$u\$/#$u/' $conf_list";
-		} else {
-			if( not $has_warning ) {
-				print "Nothing to remove: source was not found.\n";
-				$has_warning = 1;
+			# Iterate through config files
+			open( FILE, "<", $conf_main ); @c = ( <FILE> ); close FILE;
+			my @cc = grep {!/^[[:space:]]*$u$/} @c;
+			if ( open( FILE, ">", $conf_main ) != 0 ) {
+				print FILE @cc;
+				close FILE;
+			}
+			# Comment in config files
+			foreach my $name ( get_source_files() ) {
+				open( FILE, "<", $name ); @c = ( <FILE> ); close FILE;
+				foreach ( @c ) {
+					s/^[[:space:]]*($u)$/#${1}/;
+				}
+				open( FILE, ">", $name ) or next; print FILE @c; close FILE;
 			}
 		}
 	}
