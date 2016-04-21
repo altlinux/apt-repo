@@ -87,6 +87,7 @@ my %branches  = (
 	'p7'  => [ "$repo_base/p7/branch",  "updates" ],
 	't7'  => [ "$repo_base/t7/branch",  "updates" ],
 	'c7'  => [ "$repo_base/c7/branch",  "updates" ],
+	'p8'  => [ "$repo_base/p8/branch",  "updates" ],
 	'sisyphus' => [ "$repo_base/Sisyphus", "alt" ],
 	'Sisyphus' => [ "$repo_base/Sisyphus", "alt" ]
 );
