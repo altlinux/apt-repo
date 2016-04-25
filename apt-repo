@@ -237,7 +237,7 @@ sub get_url {
 	}
 
 	# Branch 	
-	if( $repo =~ /^branch$/ ) {
+	if( $repo eq 'branch' ) {
 		# Branch list
 		if ( not defined $object )  {
 			# Show all available branch names
@@ -282,7 +282,7 @@ sub get_url {
 	}
 
 	# Task
-	if( $repo =~ /^task$/ ) {
+	if( $repo eq 'task' ) {
 		if( not defined $object ) {
 			print "Task number is missed.\n";
 			exit 1;
@@ -416,7 +416,7 @@ sub rm_repo {
 
 	my @urls;
 
-	if( defined $repo and $repo =~ /^all$/ ) {
+	if( defined $repo and $repo eq 'all' ) {
 		# Remove all active sources
 		@urls = get_repos();
 
@@ -519,7 +519,7 @@ sub test_task {
 	my @pkgs = ();
 	my $list = "";
 
-	$task = shift if $task =~ /^task$/;
+	$task = shift if $task eq 'task';
 
 	@pkgs = @_;
 	if ( $#pkgs == 0 ) {
@@ -556,18 +556,18 @@ sub test_task {
 # Process command line arguments
 
 # Exiting functions
-show_repo( @ARGV ) if $cmd =~ /^list$/;
-show_repo( 'list', '-a' ) if $cmd =~ /^-a$/;
+show_repo( @ARGV ) if $cmd eq 'list';
+show_repo( 'list', '-a' ) if $cmd eq '-a';
 show_usage() if $cmd =~ /-(h|-help)$/ or scalar @ARGV == 0; 
 show_version() if $cmd =~ /-(v|-version)$/;
 clear_repo( @ARGV ) if $cmd =~ /^clea[rn]$/;
-update_repo() if $cmd =~ /^update$/;
-test_task( @ARGV ) if $cmd =~ /^test$/;
+update_repo() if $cmd eq 'update';
+test_task( @ARGV ) if $cmd eq 'test';
 
 # Functions with return
 if( $cmd =~ /^(add|rm)$/ ) {
-	add_repo( @ARGV ) if $cmd =~ /^add$/;
-	rm_repo( @ARGV ) if $cmd =~ /^rm$/;
+	add_repo( @ARGV ) if $cmd eq 'add';
+	rm_repo( @ARGV ) if $cmd eq 'rm';
 } else {
 	print "Unknown command `$cmd`.\nRun `apt-repo --help` for supported commands.\n";
 	exit 1;
