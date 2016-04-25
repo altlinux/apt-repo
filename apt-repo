@@ -111,8 +111,9 @@ COMMANDS:
   clean            Remove all cdrom and task sources
   update           Update APT caches
                    (Runs `hsh --initroot-only` if `--hsh-apt-config` is given.)
-  test [task] <id> Install all packages (except *-debuginfo) from task
+  test [task] <id> [pkg1 ...] Install all packages (except *-debuginfo) from task
                    (Uses hasher(7) if `--hsh-apt-config` is given.)
+                   You can optional specify package(s) to test.
   -h, --help       Show help and exit
   -v               Show version and exit
 
@@ -505,7 +506,11 @@ sub test_task {
 	my $list = "";
 
 	$task = shift if $task =~ /^task$/;
-	@pkgs = get_task_content( $task );
+
+	@pkgs = @_;
+	if ( $#pkgs == 0 ) {
+		@pkgs = get_task_content( $task );
+	}
 
 	# Add source and update indices
 	$continues = 1;
