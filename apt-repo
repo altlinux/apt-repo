@@ -185,6 +185,19 @@ sub get_task_content {
 	return @out;
 }
 
+# Get status of arepo for task
+sub task_has_arepo {
+	my $task = shift;
+	my @out = ();
+
+	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
+
+	open P, '-|', "curl -s -o /dev/null -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
+	@out = <P>;
+	close P;
+	return ( join( '', @out) eq "200" );
+}
+
 # Show repositories
 sub show_repo {
 	shift;
@@ -276,10 +289,11 @@ sub get_url {
 		}
 		if( $arch =~ /^x86_64$/ and ( not defined $ENV{NO_TASK_AREPO_HACK} or $ENV{NO_TASK_AREPO_HACK} eq '' ) ) {
 			# Arepo source for x86_64
-			return (
-				'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task,
-				'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task
-			);
+			my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
+			if ( task_has_arepo( $object ) ) {
+				push @ret, 'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task;
+			}
+			return @ret;
 		} else {
 			return ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
 		}
