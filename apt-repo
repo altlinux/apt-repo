@@ -544,7 +544,7 @@ sub test_task {
 	$task = shift if $task eq 'task';
 
 	@pkgs = @_;
-	if ( $#pkgs == 0 ) {
+	if ( scalar(@pkgs) == 0 ) {
 		@pkgs = get_task_content( $task );
 	}
 
