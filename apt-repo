@@ -301,10 +301,10 @@ sub get_url {
 			print "Task number is missed.\n";
 			exit 1;
 		}
-		if( $arch =~ /^x86_64$/ and ( not defined $ENV{NO_TASK_AREPO_HACK} or $ENV{NO_TASK_AREPO_HACK} eq '' ) ) {
+		if( $arch eq 'x86_64' and ( not defined $ENV{NO_TASK_AREPO_HACK} or $ENV{NO_TASK_AREPO_HACK} eq '' ) ) {
 			# Arepo source for x86_64
 			my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
-			if ( task_has_arepo( $object ) ) {
+			if ( $ARGV[0] eq 'rm' or  task_has_arepo( $object ) ) {
 				push @ret, 'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task;
 			}
 			return @ret;
