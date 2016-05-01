@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.3.0 2016-04-25 16:57:00 cas Exp $
+# $Id: apt-repo,v 1.3.2 2016-05-01 13:03:00 cas Exp $
 
 # Copyright 2011-2016 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.3.0';
+our $VERSION = '1.3.2';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -223,7 +223,9 @@ sub new_format {
         # move two last path components to architecture
         $i++ if $s[$i] =~ /^\[/;
         $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+)\/?/${1}/;
-        $s[$i+1] = $2 . '/' . $s[$i+1];
+        if( defined $2 and $2 ne '') {
+		$s[$i+1] = $2 . '/' . $s[$i+1];
+        }
 
         return join( ' ', @s );
 }
