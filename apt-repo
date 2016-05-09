@@ -303,16 +303,12 @@ sub get_url {
 			print "Task number is missed.\n";
 			exit 1;
 		}
-		if( $arch eq 'x86_64' ) {
+		my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
+		if( $arch eq 'x86_64' and ( $ARGV[0] eq 'rm' or  task_has_arepo( $object ) ) ) {
 			# Arepo source for x86_64
-			my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
-			if ( $ARGV[0] eq 'rm' or  task_has_arepo( $object ) ) {
-				push @ret, 'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task;
-			}
-			return @ret;
-		} else {
-			return ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
+			push @ret, 'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task;
 		}
+		return @ret;
 	}
 
 	# URL
