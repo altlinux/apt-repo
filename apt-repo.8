@@ -127,6 +127,11 @@ cache from the active repositories.
 .It test [task] Ar id
 Install all available packages (except *-debuginfo) from the task repository specified by
 .Ar id .
+.It test [task] Ar id Ar pkg1 Ar pkg2
+Install the given packages from the task repository specified by
+.Ar id .
+.It test [task] Ar '' Ar pkg1 Ar pkg2
+Install the given packages (without modifying APT repos).
 .It Fl h Fl \-help
 Print usage information and quit.
 .It Fl v Fl \-version

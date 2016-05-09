@@ -114,6 +114,8 @@ COMMANDS:
   test [task] <id> [pkg1 ...] Install all packages (except *-debuginfo) from task
                    (Uses hasher(7) if `--hsh-apt-config` is given.)
                    You can optional specify package(s) to test.
+  test [task] '' pkg1 ... Install the packages (without modifying APT repos)
+                   (Uses hasher(7) if `--hsh-apt-config` is given.)
   -h, --help       Show help and exit
   -v               Show version and exit
 
