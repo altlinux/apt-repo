@@ -545,7 +545,9 @@ sub test_task {
 
 	# Add source and update indices
 	$continues = 1;
-	add_repo( ("add", "task", $task ) );
+	if ( not $task eq '' ) {
+	    add_repo( ("add", "task", $task ) );
+	}
 	if ( update_repo() or ! $hsh ) {
 	    # `hsh --initroot-only` is particularly fragile,
 	    # so if we are using hsh and if the "update" command
@@ -565,7 +567,9 @@ sub test_task {
 	}
 
 	# Remove task source
-	rm_repo( ("rm", "task", $task ) );
+	if ( not $task eq '' ) {
+	    rm_repo( ("rm", "task", $task ) );
+	}
 
 	exit 0;
 }
