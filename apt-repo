@@ -192,10 +192,10 @@ sub task_has_arepo {
 
 	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
-	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
+	open P, '-|', "curl -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
 	@out = <P>;
 	close P;
-	return ( not join( '', @out) eq "" );
+	return ( (pop @out) eq "200" and (scalar @out) != 0);
 }
 
 # Show repositories
