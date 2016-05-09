@@ -303,7 +303,7 @@ sub get_url {
 			print "Task number is missed.\n";
 			exit 1;
 		}
-		if( $arch eq 'x86_64' and ( not defined $ENV{NO_TASK_AREPO_HACK} or $ENV{NO_TASK_AREPO_HACK} eq '' ) ) {
+		if( $arch eq 'x86_64' ) {
 			# Arepo source for x86_64
 			my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
 			if ( $ARGV[0] eq 'rm' or  task_has_arepo( $object ) ) {
@@ -530,9 +530,6 @@ sub update_repo {
 	warn 'Error: The "update" command has not completed successfully';
     }
     exit $error_code if ! $continues;
-    if ( $error_code ) {
-	warn 'Hint: If your task lacks an x86_64-i586 repo, run with NO_TASK_AREPO_HACK=yes';
-    }
     return !$error_code;
 }
 
