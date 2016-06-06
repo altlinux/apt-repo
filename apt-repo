@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.3.3 2016-05-04 12:08:00 cas Exp $
+# $Id: apt-repo,v 1.3.6 2016-06-06 19:21:00 cas Exp $
 
 # Copyright 2011-2016 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.3.3';
+our $VERSION = '1.3.6';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -394,6 +394,7 @@ sub add_repo {
 		next if $a_found; # Source is active, nothing do
 
 		if( $i_found ) {
+			my $ret_file;
 			# Uncomment commented source
 			my $ur = quotemeta $u;
 			my $urnew = quotemeta $unew;
@@ -404,7 +405,12 @@ sub add_repo {
 					s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
 					s/^[[:space:]]*#[[:space:]]*($urnew)$/${1}/;
 				}
-				if ( open( FILE, ">", $name ) != 0 ) {
+				$ret_file = open( FILE, ">", $name );
+				if ( not defined $ret_file ) {
+					print "Unable to edit file $name. Possibly, permission denied. Exiting.\n";
+					exit 1;
+				}
+				if ( $ret_file != 0 ) {
 					print FILE @c;
 					close FILE;
 				}
@@ -471,6 +477,7 @@ sub rm_repo {
 
 		# Remove from $conf_main, comment in other files
 		if( $a_found ) {
+			my $ret_file;
 			my @cc;
 			$u = quotemeta $u;
 			$unew = quotemeta $unew;
@@ -478,7 +485,12 @@ sub rm_repo {
 			open( FILE, "<", $conf_main ); @c = ( <FILE> ); close FILE;
 			@cc = grep {!/^[[:space:]]*$u$/} @c;
 			@cc = grep {!/^[[:space:]]*$unew$/} @cc;
-			if ( open( FILE, ">", $conf_main ) != 0 ) {
+			$ret_file = open( FILE, ">", $conf_main );
+			if ( not defined $ret_file ) {
+				print "Unable to edit file $conf_main. Possibly, permission denied. Exiting.\n";
+				return 1;
+			}
+			if ( $ret_file != 0 ) {
 				print FILE @cc;
 				close FILE;
 			}
