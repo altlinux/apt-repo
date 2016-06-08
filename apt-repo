@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.3.6 2016-06-06 19:21:00 cas Exp $
+# $Id: apt-repo,v 1.3.7 2016-06-08 11:50:00 cas Exp $
 
 # Copyright 2011-2016 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.3.6';
+our $VERSION = '1.3.7';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -90,11 +90,14 @@ my %branches  = (
 	'p8'  => [ "$repo_base/p8/branch",  "updates", "classic" ],
 	'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
 	'Sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
-	'altlinuxclub.sisyphus' => [ "http://altlinuxclub.ru/repo/repo_s/",  "", "hasher" ],
-	'altlinuxclub.p7'  => [ "http://altlinuxclub.ru/repo/Repo_P7/", "", "hasher" ],
-	'altlinuxclub.p6'  => [ "http://altlinuxclub.ru/repo/Repo_P6/", "", "hasher" ],
+	'autoimports.p7' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p7", "", "autoimports" ],
+	'autoimports.p8' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p8", "", "autoimports" ],
+	'autoimports.sisyphus' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/Sisyphus", "", "autoimports" ],
+	'altlinuxclub.4.0' => [ "http://altlinuxclub.ru/repo/Repo_4/",  "", "hasher" ],
 	'altlinuxclub.p5'  => [ "http://altlinuxclub.ru/repo/Repo_P5/", "", "hasher" ],
-	'altlinuxclub.4.0' => [ "http://altlinuxclub.ru/repo/Repo_4/",  "", "hasher" ]
+	'altlinuxclub.p6'  => [ "http://altlinuxclub.ru/repo/Repo_P6/", "", "hasher" ],
+	'altlinuxclub.p7'  => [ "http://altlinuxclub.ru/repo/Repo_P7/", "", "hasher" ],
+	'altlinuxclub.sisyphus' => [ "http://altlinuxclub.ru/repo/repo_s/",  "", "hasher" ]
 );
 
 # Show usage information
@@ -270,9 +273,11 @@ sub get_url {
 			my $key = '';
 			my $farch = $arch;
 			my $altlinuxclub = 0;
+			my $autoimports  = 0;
 			my $url = $branches{ $object }[0];
 
 			$altlinuxclub = 1 if $url =~ /^http\:\/\/altlinuxclub\.ru/;
+			$autoimports  = 1 if $url =~ /\/ALTLinux\/autoimports\//;
 
 			# Hack $arch for altlinuxclub.ru
 			$farch = 'i686' if $altlinuxclub and $arch eq 'i586';
@@ -287,7 +292,7 @@ sub get_url {
 			push( @branch_source, $u . ' ' . $noarch . ' ' . $branches{ $object }[2] ) if not $altlinuxclub;
 
 			# For x86_64 add Arepo 2.0 source
-			if( $farch eq 'x86_64' and not $altlinuxclub ) {
+			if( $farch eq 'x86_64' and not $altlinuxclub and not $autoimports ) {
 				push( @branch_source, $u . ' x86_64-i586 ' . $branches{ $object }[2] );
 			}
 		} else {
