@@ -578,9 +578,9 @@ sub test_task {
 
 	# Install packages from task repository
 	if (! $hsh ) {
-	    system "apt-get install $list";
+	    system "cd /var/empty/; apt-get install $list";
 	} else {
-	    system "hsh-install $list";
+	    system "cd /var/empty/; hsh-install $list";
 	}
 
 	}
