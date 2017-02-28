@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.3.7';
+our $VERSION = '1.3.9';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -88,6 +88,7 @@ my %branches  = (
 	't7'  => [ "$repo_base/t7/branch",  "updates", "classic" ],
 	'c7'  => [ "$repo_base/c7/branch",  "updates", "classic" ],
 	'p8'  => [ "$repo_base/p8/branch",  "updates", "classic" ],
+	'c8'  => [ "$repo_base/c8/branch",  "updates", "classic" ],
 	'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
 	'Sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
 	'autoimports.p7' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p7", "", "autoimports" ],
@@ -97,6 +98,7 @@ my %branches  = (
 	'altlinuxclub.p5'  => [ "http://altlinuxclub.ru/repo/Repo_P5/", "", "hasher" ],
 	'altlinuxclub.p6'  => [ "http://altlinuxclub.ru/repo/Repo_P6/", "", "hasher" ],
 	'altlinuxclub.p7'  => [ "http://altlinuxclub.ru/repo/Repo_P7/", "", "hasher" ],
+	'altlinuxclub.p8'  => [ "http://altlinuxclub.ru/repo/Repo_P8/", "", "hasher" ],
 	'altlinuxclub.sisyphus' => [ "http://altlinuxclub.ru/repo/repo_s/",  "", "hasher" ]
 );
 
