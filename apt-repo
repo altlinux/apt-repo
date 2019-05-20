@@ -89,6 +89,7 @@ my %branches  = (
 	'c7'  => [ "$repo_base/c7/branch",  "updates", "classic" ],
 	'p8'  => [ "$repo_base/p8/branch",  "updates", "classic" ],
 	'c8'  => [ "$repo_base/c8/branch",  "updates", "classic" ],
+	'p9'  => [ "$repo_base/p9/branch",  "p9", "classic" ],
 	'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
 	'Sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
 	'autoimports.p7' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p7", "", "autoimports" ],
