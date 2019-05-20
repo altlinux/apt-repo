@@ -188,10 +188,23 @@ sub get_task_content {
 
 	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
+        die "Task $task is unknown or still building" if ! task_exists( $task );
+
 	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|debuginfo)\$' | sort -u";
 	@out = <P>;
 	close P;
 	return @out;
+}
+
+# Get status of task
+sub task_exists {
+        my $task = shift;
+        my @out = ();
+
+        open P, '-|', "curl -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/add-bin";
+        @out = <P>;
+        close P;
+        return ( (pop @out) eq "200" and (scalar @out) != 0);
 }
 
 # Get status of arepo for task
