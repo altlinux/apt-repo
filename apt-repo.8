@@ -88,7 +88,7 @@ format. If
 is specified, all available repositories are displayed (inactive ones are commented by
 .Ql # ) .
 .It list [task] Ar id
-Show names of all available packages (except *-debuginfo) in a task repository specified by
+Show names of all available packages (except *-devel* and *-debuginfo) in a task repository specified by
 .Ar id .
 .It add Ar source
 Add
@@ -125,7 +125,7 @@ to update the
 .Tn APT
 cache from the active repositories.
 .It test [task] Ar id
-Install all available packages (except *-debuginfo) from the task repository specified by
+Install all available packages (except *-devel* and *-debuginfo) from the task repository specified by
 .Ar id .
 .It test [task] Ar id Ar pkg1 Ar pkg2
 Install the given packages from the task repository specified by

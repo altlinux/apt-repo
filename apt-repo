@@ -117,7 +117,7 @@ COMMANDS:
   clean            Remove all cdrom and task sources
   update           Update APT caches
                    (Runs `hsh --initroot-only` if `--hsh-apt-config` is given.)
-  test [task] <id> [pkg1 ...] Install all packages (except *-debuginfo) from task
+  test [task] <id> [pkg1 ...] Install all packages (except *-devel and *-debuginfo) from task <id>
                    (Uses hasher(7) if `--hsh-apt-config` is given.)
                    You can optional specify package(s) to test.
   test [task] '' pkg1 ... Install the packages (without modifying APT repos)
@@ -187,7 +187,7 @@ sub get_task_content {
 
 	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
-	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -v '\\-debuginfo\$' | sort -u";
+	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|debuginfo)\$' | sort -u";
 	@out = <P>;
 	close P;
 	return @out;
