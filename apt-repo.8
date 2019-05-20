@@ -33,6 +33,9 @@ rm
 .Ar source|all
 .Op Ar type
 .Nm apt\-repo
+set
+.Ar branch
+.Nm apt\-repo
 clean
 .Nm apt\-repo
 update
@@ -116,6 +119,9 @@ removes all tasks sources,
 or
 .Ql cdroms
 removes all cdrom sources.
+.It set Ar branch
+Removes all exising sources and adds branch 
+.Ar branch
 .It clean
 Removes all cdrom and task sources.
 .It update

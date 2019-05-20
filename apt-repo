@@ -113,6 +113,7 @@ COMMANDS:
   list [-a]        List active or all repositories
   list [task] <id> List task packages
   add <source>     Add APT repository
+  set <branch>     Remove all exising sources and add branch <branch>
   rm <source|all>  Remove APT repository
   clean            Remove all cdrom and task sources
   update           Update APT caches
@@ -529,6 +530,20 @@ sub clear_repo {
 	exit 0 if ! $continues;
 }
 
+# Remove all and set new branch
+sub set_repo {
+    shift;
+    my $branch = shift;
+    my @cmd;
+
+    @cmd = qw(rm all);
+    rm_repo( @cmd );
+
+    @cmd = qw(add branch);
+    push( @cmd, $branch );
+    add_repo( @cmd );
+}
+
 # Update repo
 sub update_repo {
     my $error_code = 0;
@@ -604,6 +619,7 @@ show_repo( 'list', '-a' ) if $cmd eq '-a';
 show_usage() if $cmd =~ /-(h|-help)$/ or scalar @ARGV == 0; 
 show_version() if $cmd =~ /-(v|-version)$/;
 clear_repo( @ARGV ) if $cmd =~ /^clea[rn]$/;
+set_repo( @ARGV ) if $cmd eq 'set';
 update_repo() if $cmd eq 'update';
 test_task( @ARGV ) if $cmd eq 'test';
 
