@@ -475,6 +475,7 @@ sub rm_repo {
 	my $a_found;
 	my $i_found;
 	my @c = ();
+        my $branch_source;
 
 	my @urls;
 
@@ -492,6 +493,20 @@ sub rm_repo {
 
 	} else {
 		@urls = get_url( $repo, $object, @comps );
+                # Add key [<branch_name>] in addition to [updates] for branch source
+                if( exists $branches{ $repo } ) {
+                    $object = $repo;
+                    $repo = 'branch';
+                }
+                if( $repo eq 'branch' ) {
+                    foreach( @urls ) {
+                        if( / \[updates\] / ) {
+                            $branch_source = $_;
+                            $branch_source =~ s/\[updates\]/[\Q$object\E]/;
+                            push( @urls, $branch_source );
+                        }
+                    }
+                }
 	}
 
 	foreach my $u ( @urls ) {
