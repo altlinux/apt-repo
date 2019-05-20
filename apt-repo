@@ -172,7 +172,7 @@ sub get_repos {
 		open(my $file, "<", $name) or warn "Can't open file '$name'";
 		while( my $l = <$file> ) {
 			# Show all active repositories
-			push( @output, $l ) if $l =~ /^[[:space:]]*$type(-src|-dir)?[[:space:]]+/;
+			push( @output, $l ) if $l =~ /^[[:space:]]*[^[:space:]#]+/;
 			# On -a show all available commented repositories
 			push( @output, $l ) if defined $all and $all =~ /^-a$/ and $l =~ /^[[:space:]]*#[[:space:]]*$type(-src|-dir)? /;
 		}
