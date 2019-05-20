@@ -187,7 +187,7 @@ component.
 Branch is a named repository consisting of two parts (current system architecture
 and 'noarch'). By default, the official server is used. Full form:
 .Pp
-.Dl apt\-repo add branch <name of branch>
+.Dl apt\-repo add branch <name of branch> [<archive_date>]
 .Pp
 Keyword
 .Ql branch
@@ -199,6 +199,8 @@ Running
 .Dl apt\-repo add branch
 .Pp
 without the name of a branch displays all available branch names.
+.Ql archive_date
+allows to add archive of branch. Date of archive should be in form YYYYMMDD or YYYY/MM/DD.
 .Ss "Task"
 Task is a small repository for one or more subtasks built in http://git.altlinux.org
 infrastructure. This source is used to install software for test purposes.

@@ -25,6 +25,9 @@ my $noarch   = 'noarch';
 my $cmd      = 'list';
 my $continues = 0;
 my $hsh = 0;
+
+my $new_format_parts = 2;
+
 if ( scalar @ARGV > 0 and $ARGV[0] =~ /^--hsh-apt-config=(.*)$/ ) {
     # Printing is useful for debugging, too:
     warn "Info: Will use hasher when appropriate (with --apt-config=$1).";
@@ -42,6 +45,7 @@ $arch = 'i586' if $arch =~ /^i686$/;
 
 # Default repository paths
 my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux';
+my $repo_archive_base = 'http://ftp.altlinux.org/pub/distributions/archive/';
 my $repo_task = 'http://git.altlinux.org/repo/';
 my $conf_main = '/etc/apt/sources.list';
 my $conf_list = '/etc/apt/sources.list.d/*.list';
@@ -101,6 +105,14 @@ my %branches  = (
 	'altlinuxclub.p7'  => [ "http://altlinuxclub.ru/repo/Repo_P7/", "", "hasher" ],
 	'altlinuxclub.p8'  => [ "http://altlinuxclub.ru/repo/Repo_P8/", "", "hasher" ],
 	'altlinuxclub.sisyphus' => [ "http://altlinuxclub.ru/repo/repo_s/",  "", "hasher" ]
+);
+
+my @archiving_branches = (
+    'p7',
+    'p8',
+    'p9',
+    't7',
+    'sisyphus'
 );
 
 # Show usage information
@@ -243,6 +255,7 @@ sub new_format {
         my $i = 1;
         my $path_str;
         my @path;
+        my $part;
 
         # move two last path components to architecture
         $i++ if $s[$i] =~ /^\[/;
@@ -252,10 +265,16 @@ sub new_format {
         $path_str =~ s/^[a-z]+:\/\///;
         @path = split '/', $path_str;
 
-        if( scalar @path >= 3 ) {
-            $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+)\/?/${1}/;
-            if( defined $2 and $2 ne '') {
-                    $s[$i+1] = $2 . '/' . $s[$i+1];
+        if( scalar @path > $new_format_parts ) {
+            if( $new_format_parts == 3 ) {
+                $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+\/[^\/]+)\/?/${1}/;
+                $part = $2;
+            } else {
+                $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+)\/?/${1}/;
+                $part = $2;
+            }
+            if( defined $part and $part ne '') {
+                $s[$i+1] = $part . '/' . $s[$i+1];
             }
         }
 
@@ -266,16 +285,18 @@ sub new_format {
 sub get_url {
 	my $repo   = shift;
 	my $object = shift;
-	my @url    = @_;
+	my @extra  = @_;
 	my $u = '';
 	my $k;
 	my @branch_source;
+        my $repo_name;
+        my $branch_archive = '';
 
 	defined $repo or die "Unknown source. See `man apt-repo` for details.";
-
 	# Quick forms: known branch name or number for task
 	if( exists $branches{ $repo } ) {
-		$object = $repo;		
+                unshift( @extra, $object );
+		$object = $repo;
 		$repo = 'branch';
 	}
 
@@ -302,6 +323,21 @@ sub get_url {
 			my $altlinuxclub = 0;
 			my $autoimports  = 0;
 			my $url = $branches{ $object }[0];
+
+                        # Check for archive
+                        $branch_archive = $extra[0] if scalar(@extra) > 0 and defined $extra[0];
+                        if( $branch_archive ne '' ) {
+                            die "Repository $object has no archive" if ! grep( /^$object$/, @archiving_branches );
+                            if( $branch_archive =~ /^\d{8}$/ ) {
+                                $branch_archive =~ s/^(\d{4})(\d{2})(\d{2})/$1\/$2\/$3/;
+                            }
+                            if( $branch_archive =~ /^\d{4}\/\d{2}\/\d{2}$/ ) {
+                                $url = $repo_archive_base . $object . '/date/' . $branch_archive;
+                                $new_format_parts = 3;
+                            } else {
+                                die "Archive of repository should be defined as YYYYMMDD or YYYY/MM/DD";
+                            }
+                        }
 
 			$altlinuxclub = 1 if $url =~ /^http\:\/\/altlinuxclub\.ru/;
 			$autoimports  = 1 if $url =~ /\/ALTLinux\/autoimports\//;
@@ -354,7 +390,7 @@ sub get_url {
 
 		if( defined $object ) {
 			# Architecture is defined
-			return ( $u . ' ' . $object . ' ' . join( ' ', @url ) );
+			return ( $u . ' ' . $object . ' ' . join( ' ', @extra ) );
 		} else {
 			# Mirror
                         push( @repos, $u . ' ' . $arch . ' ' . $component );
@@ -377,7 +413,7 @@ sub get_url {
 	# In format of sources.list(5)
 	if( $repo =~ /^$type(-src|-dir)?\b/ ) {
 		if( defined $object ) {
-			return ( $repo . ' ' . $object . ' ' . join( ' ', @url ) );
+			return ( $repo . ' ' . $object . ' ' . join( ' ', @extra ) );
 		} else {
 			return ( $repo );
 		}
