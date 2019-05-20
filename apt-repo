@@ -27,6 +27,12 @@ my $continues = 0;
 my $hsh = 0;
 
 my $new_format_parts = 2;
+my $dry_run = 0;
+
+if( grep( /^--dry-run$/, @ARGV) ) {
+    $dry_run = 1;
+    @ARGV = map( /^--dry-run$/ ? () : $_, @ARGV);
+}
 
 if ( scalar @ARGV > 0 and $ARGV[0] =~ /^--hsh-apt-config=(.*)$/ ) {
     # Printing is useful for debugging, too:
@@ -118,7 +124,7 @@ my @archiving_branches = (
 # Show usage information
 sub show_usage {
 	print <<"HELP";
-Usage: apt-repo [--hsh-apt-config=FILE] COMMAND SOURCE
+Usage: apt-repo [--hsh-apt-config=FILE] [--dry-run] COMMAND SOURCE
 Manipulate APT repository list.
 
 COMMANDS:
@@ -147,6 +153,8 @@ to arbitrary non-system configurations for APT.
 There is a switch for the special case when you want to use hasher(7) together
 with a local APT configuration: --hsh-apt-config=FILE.
 Note that no tilde expansion is performed on FILE!
+
+If --dry-run is defined in command line changes only shown, is not performed.
 HELP
 	exit 0;
 }
@@ -470,6 +478,8 @@ sub add_repo {
 
 		if( $i_found ) {
 			my $ret_file;
+            my $l0;
+            my $l;
 			# Uncomment commented source
 			my $ur = quotemeta $u;
 			my $urnew = quotemeta $unew;
@@ -477,25 +487,42 @@ sub add_repo {
 			foreach my $name ( get_source_files() ) {
 				open( FILE, "<", $name ); @c = ( <FILE> ); close FILE;
 				foreach ( @c ) {
-					s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
-					s/^[[:space:]]*#[[:space:]]*($urnew)$/${1}/;
+                    if( $dry_run ) {
+                        $l = $_;
+                        $l0 = $l;
+					    $l =~ s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
+					    $l =~ s/^[[:space:]]*#[[:space:]]*($urnew)$/${1}/;
+                        if( $l0 ne $l ) {
+                            print "$name:-$l0";
+                            print "$name:+$l";
+                        }
+                    } else {
+					    s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
+					    s/^[[:space:]]*#[[:space:]]*($urnew)$/${1}/;
+                    }
 				}
-				$ret_file = open( FILE, ">", $name );
-				if ( not defined $ret_file ) {
-					print "Unable to edit file $name. Possibly, permission denied. Exiting.\n";
-					exit 1;
-				}
-				if ( $ret_file != 0 ) {
-					print FILE @c;
-					close FILE;
+				if( ! $dry_run ) {
+					$ret_file = open( FILE, ">", $name );
+					if ( not defined $ret_file ) {
+						print "Unable to edit file $name. Possibly, permission denied. Exiting.\n";
+						exit 1;
+					}
+					if ( $ret_file != 0 ) {
+						print FILE @c;
+						close FILE;
+					}
 				}
 			}
 			next;
 		} else {
 			# Append to main sources list file
-			open CONFIG, '>>', "$conf_main" or die "Can't open $conf_main: $!";
-			print CONFIG $unew . "\n";
-			close CONFIG;
+            if( $dry_run ) {
+                print "$conf_main:+$unew\n";
+            } else {
+                open CONFIG, '>>', "$conf_main" or die "Can't open $conf_main: $!";
+                print CONFIG $unew . "\n";
+                close CONFIG;
+            }
 		}
 	}
 
@@ -511,7 +538,7 @@ sub rm_repo {
 	my $a_found;
 	my $i_found;
 	my @c = ();
-        my $branch_source;
+    my $branch_source;
 
 	my @urls;
 
@@ -569,29 +596,55 @@ sub rm_repo {
 		if( $a_found ) {
 			my $ret_file;
 			my @cc;
+            my $l0;
+            my $l;
 			$u = quotemeta $u;
 			$unew = quotemeta $unew;
 			# Iterate through config files
 			open( FILE, "<", $conf_main ); @c = ( <FILE> ); close FILE;
-			@cc = grep {!/^[[:space:]]*$u$/} @c;
-			@cc = grep {!/^[[:space:]]*$unew$/} @cc;
-			$ret_file = open( FILE, ">", $conf_main );
-			if ( not defined $ret_file ) {
-				print "Unable to edit file $conf_main. Possibly, permission denied. Exiting.\n";
-				return 1;
-			}
-			if ( $ret_file != 0 ) {
-				print FILE @cc;
-				close FILE;
-			}
+            if( ! $dry_run ) {
+			    @cc = grep {!/^[[:space:]]*$u$/} @c;
+			    @cc = grep {!/^[[:space:]]*$unew$/} @cc;
+                $ret_file = open( FILE, ">", $conf_main );
+                if ( not defined $ret_file ) {
+                    print "Unable to edit file $conf_main. Possibly, permission denied. Exiting.\n";
+                    return 1;
+                }
+                if ( $ret_file != 0 ) {
+                    print FILE @cc;
+                    close FILE;
+                }
+            } else {
+				my @ca = ();
+			    @cc = grep {/^[[:space:]]*$u$/} @c;
+				push( @ca, @cc ) if @cc;
+			    @cc = grep {/^[[:space:]]*$unew$/} @c;
+				push( @ca, @cc ) if @cc;
+                foreach( @ca ) {
+                    print "$conf_main:-$_";
+                }
+            }
 			# Comment in config files
 			foreach my $name ( get_source_files() ) {
 				open( FILE, "<", $name ); @c = ( <FILE> ); close FILE;
 				foreach ( @c ) {
-					s/^[[:space:]]*($u)$/#${1}/;
-					s/^[[:space:]]*($unew)$/#${1}/;
+                    if( $dry_run ) {
+                        $l = $_;
+                        $l0 = $l;
+					    $l =~ s/^[[:space:]]*($u)$/#${1}/;
+					    $l =~ s/^[[:space:]]*($unew)$/#${1}/;
+                        if( $l0 ne $l and $name ne $conf_main ) {
+                            print "$name:-$l0";
+                            print "$name:+$l";
+                        }
+                    } else {
+					    s/^[[:space:]]*($u)$/#${1}/;
+					    s/^[[:space:]]*($unew)$/#${1}/;
+                    }
 				}
-				open( FILE, ">", $name ) or next; print FILE @c; close FILE;
+                if( ! $dry_run ) {
+				    open( FILE, ">", $name ) or next; print FILE @c; close FILE;
+                }
 			}
 		}
 	}
@@ -693,7 +746,6 @@ sub test_task {
 }
 
 # Process command line arguments
-
 # Exiting functions
 show_repo( @ARGV ) if $cmd eq 'list';
 show_repo( 'list', '-a' ) if $cmd eq '-a';
