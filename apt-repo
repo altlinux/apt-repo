@@ -228,12 +228,22 @@ sub new_format {
 	my $source = shift;
         my @s = split ' ', $source;
         my $i = 1;
+        my $path_str;
+        my @path;
 
         # move two last path components to architecture
         $i++ if $s[$i] =~ /^\[/;
-        $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+)\/?/${1}/;
-        if( defined $2 and $2 ne '') {
-		$s[$i+1] = $2 . '/' . $s[$i+1];
+
+        # Set new format only URL contains at least 3 parts
+        $path_str = $s[$i];
+        $path_str =~ s/^[a-z]+:\/\///;
+        @path = split '/', $path_str;
+
+        if( scalar @path >= 3 ) {
+            $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+)\/?/${1}/;
+            if( defined $2 and $2 ne '') {
+                    $s[$i+1] = $2 . '/' . $s[$i+1];
+            }
         }
 
         return join( ' ', @s );
