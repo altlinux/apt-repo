@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.3.7 2016-06-08 11:50:00 cas Exp $
+# $Id: apt-repo,v 1.3.10 2019-05-20 14:06:00 cas Exp $
 
-# Copyright 2011-2016 by Andrey Cherepanov (cas@altlinux.org)
+# Copyright 2011-2016,2019 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
 # (imz: support for relying on apt-config and APT_CONFIG)
 # (imz: Support for local --hsh-apt-config=FILE together with hasher.)
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.3.9';
+our $VERSION = '1.3.10';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
