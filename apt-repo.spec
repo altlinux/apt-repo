@@ -10,9 +10,8 @@ Packager: Andrey Cherepanov <cas@altlinux.org>
 BuildArch: noarch
 
 Source:   %name-%version.tar
-BuildRequires: gzip
-Requires:  apt
-Requires:  curl
+Requires: apt
+Requires: curl
 
 %description
 The apt-repo script allow to show, add and remove APT repositories
@@ -24,9 +23,7 @@ component, branch name or task number.
 
 %install
 install -Dm755 %name %buildroot%_bindir/%name
-mkdir -p %buildroot%_man1dir
 install -Dpm 644 %name.8 %buildroot%_man8dir/%name.8
-gzip %buildroot%_man8dir/%name.8
 
 %find_lang %name
 
