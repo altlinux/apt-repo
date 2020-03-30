@@ -29,6 +29,8 @@ my $hsh = 0;
 my $new_format_parts = 2;
 my $dry_run = 0;
 
+my $proxy = get_proxy();
+
 if( grep( /^--dry-run$/, @ARGV) ) {
     $dry_run = 1;
     @ARGV = map( /^--dry-run$/ ? () : $_, @ARGV);
@@ -124,6 +126,22 @@ my @archiving_branches = (
     'sisyphus'
 );
 
+sub get_proxy {
+
+    my @res=`apt-config dump | grep -i "https\\?::proxy"`;
+
+    if (scalar @res > 1) {
+	print "Too many proxy found. You should check the apt's configuration.";
+    }
+
+    if ( defined $res[0] and $res[0] =~ /.*https?::proxy "(.*)";/i ) {
+	#print "$1\n";
+	return "--proxy $1";
+    }
+
+    return "";
+}
+
 # Show usage information
 sub show_usage {
 	print <<"HELP";
@@ -213,7 +231,7 @@ sub get_task_content {
 
         die "Task $task is unknown or still building" if ! task_exists( $task );
 
-	open P, '-|', "curl -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|debuginfo)\$' | sort -u";
+	open P, '-|', "curl $proxy -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|debuginfo)\$' | sort -u";
 	@out = <P>;
 	close P;
 	return @out;
@@ -224,7 +242,7 @@ sub task_exists {
         my $task = shift;
         my @out = ();
 
-        open P, '-|', "curl -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/add-bin";
+        open P, '-|', "curl $proxy -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/add-bin";
         @out = <P>;
         close P;
         return ( (pop @out) eq "200" and (scalar @out) != 0);
@@ -237,7 +255,7 @@ sub task_has_arepo {
 
 	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
-	open P, '-|', "curl -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
+	open P, '-|', "curl $proxy -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
 	@out = <P>;
 	close P;
 	return ( (pop @out) eq "200" and (scalar @out) != 0);
