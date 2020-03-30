@@ -24,11 +24,13 @@ component, branch name or task number.
 %install
 install -Dm755 %name %buildroot%_bindir/%name
 install -Dpm 644 %name.8 %buildroot%_man8dir/%name.8
+install -Dpm 644 %name.sysconfig %buildroot%_sysconfdir/sysconfig/%name
 
 %find_lang %name
 
 %files -f %name.lang
 %doc TODO
+%config(noreplace) %_sysconfdir/sysconfig/%name
 %_bindir/%name
 %_man8dir/%name.8*
 

@@ -28,6 +28,7 @@ my $hsh = 0;
 
 my $new_format_parts = 2;
 my $dry_run = 0;
+my $use_arepo = check_ignore_arepo();
 
 my $proxy = get_proxy();
 
@@ -142,6 +143,19 @@ sub get_proxy {
     return "";
 }
 
+# Check Arepo ignoring
+sub check_ignore_arepo {
+	open( my $file, "<", "/etc/sysconfig/apt-repo" ) or return 1;
+	while( my $l = <$file> ) {
+		if( $l =~ /^AREPO\s*=\s*NO/ ) {
+			close( $file );
+			return 0;
+		}
+	}
+	close( $file );
+	return 1;
+}
+
 # Show usage information
 sub show_usage {
 	print <<"HELP";
@@ -176,6 +190,9 @@ with a local APT configuration: --hsh-apt-config=FILE.
 Note that no tilde expansion is performed on FILE!
 
 If --dry-run is defined in command line changes only shown, is not performed.
+
+If AREPO=NO is uncommented in /etc/sysconfig/apt-repo all additional operations
+ignore Arepo sources.
 HELP
 	exit 0;
 }
@@ -384,7 +401,7 @@ sub get_url {
 			push( @branch_source, $u . ' ' . $noarch . ' ' . $branches{ $object }[2] ) if not $altlinuxclub;
 
 			# For x86_64 add Arepo 2.0 source
-			if( $farch eq 'x86_64' and not $altlinuxclub and not $autoimports ) {
+			if( $use_arepo and $farch eq 'x86_64' and not $altlinuxclub and not $autoimports ) {
 				push( @branch_source, $u . ' x86_64-i586 ' . $branches{ $object }[2] );
 			}
 		} else {
@@ -403,7 +420,7 @@ sub get_url {
 			exit 1;
 		}
 		my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
-		if( $arch eq 'x86_64' and ( $ARGV[0] eq 'rm' or  task_has_arepo( $object ) ) ) {
+		if( $use_arepo and $arch eq 'x86_64' and ( $ARGV[0] eq 'rm' or task_has_arepo( $object ) ) ) {
 			# Arepo source for x86_64
 			push @ret, 'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task;
 		}
@@ -427,7 +444,7 @@ sub get_url {
                             $path = $repo;
                             $path =~ s/^file://;
                             $path .= '/x86_64-i586';
-                            push( @repos, $u . ' x86_64-i586  ' . $component ) if -d $path;
+                            push( @repos, $u . ' x86_64-i586  ' . $component ) if -d $path and $use_arepo;
                         }
                         push( @repos, $u . ' ' . $noarch . ' ' . $component );
 			return @repos;
