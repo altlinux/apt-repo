@@ -6,5 +6,6 @@
 - support CD and DVD sources
 - l10n (both in program output and man page)
 - documentation and examples on http://www.altlinux.org/Apt-repo
+- apt-repo upgrade [with <task1> [<task2>]]
 
 See https://bugzilla.altlinux.org/buglist.cgi?component=apt-repo&product=Sisyphus
