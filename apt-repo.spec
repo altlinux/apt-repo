@@ -3,7 +3,7 @@ Version:  1.3.10
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
-License:  GPLv3+
+License:  GPL-3.0+
 Group:    System/Configuration/Packaging
 URL: 	  http://altlinux.org/apt-repo
 Packager: Andrey Cherepanov <cas@altlinux.org> 
