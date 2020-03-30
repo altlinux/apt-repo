@@ -1,5 +1,5 @@
 Name:     apt-repo
-Version:  1.3.10
+Version:  1.3.11
 Release:  alt1
 
 Summary:  Script for manipulation APT repository list
@@ -35,6 +35,12 @@ install -Dpm 644 %name.sysconfig %buildroot%_sysconfdir/sysconfig/%name
 %_man8dir/%name.8*
 
 %changelog
+* Mon Mar 30 2020 Andrey Cherepanov <cas@altlinux.org> 1.3.11-alt1
+- Add new repositories: c8.1, autoimports.p9 and altlinuxclub.p9.
+- Use proxy from APT for network operations (thanks asy@) (ALT #38294).
+- Set optional Arepo ignoring in file /etc/sysconfig/apt-repo (ALT #34167).
+- Fix License tag according to SPDX.
+
 * Mon May 20 2019 Andrey Cherepanov <cas@altlinux.org> 1.3.10-alt1
 - Add p9 branch.
 - Add --dry-run mode (ALT #35726).
