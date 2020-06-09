@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.3.11 2020-03-30 08:39:33 cas Exp $
+# $Id: apt-repo,v 1.3.12 2020-06-09 12:05:40 cas Exp $
 
 # Copyright 2011-2016,2019,2020 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
@@ -15,7 +15,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.3.11';
+our $VERSION = '1.3.12';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -101,7 +101,7 @@ my %branches  = (
 	't7'  => [ "$repo_base/t7/branch",  "updates", "classic" ],
 	'c7'  => [ "$repo_base/c7/branch",  "updates", "classic" ],
 	'p8'  => [ "$repo_base/p8/branch",  "updates", "classic" ],
-	'c8'  => [ "$repo_base/c8/branch",  "updates", "classic" ],
+	'c8'  => [ "http://update.altsp.su/pub/distributions/ALTLinux/c8/branch", "cert8", "classic" ],
 	'c8.1' => [ "$repo_base/c8.1/branch",  "updates", "classic" ],
 	'p9'  => [ "$repo_base/p9/branch",  "p9", "classic" ],
 	'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
