@@ -52,6 +52,9 @@ chomp $arch; # Truncate carriage return from output
 # arch for x86_32
 $arch = 'i586' if $arch =~ /^i686$/;
 
+# arch for armh
+$arch = 'armh' if $arch =~ /^armv7l$/;
+
 # Default repository paths
 my $repo_base = 'http://ftp.altlinux.org/pub/distributions/ALTLinux';
 my $repo_archive_base = 'http://ftp.altlinux.org/pub/distributions/archive/';
