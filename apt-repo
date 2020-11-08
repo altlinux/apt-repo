@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.3.12 2020-06-09 12:05:40 cas Exp $
+# $Id: apt-repo,v 1.3.14 2020-11-08 17:19:00 cas Exp $
 
 # Copyright 2011-2016,2019,2020 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
@@ -174,7 +174,7 @@ COMMANDS:
   clean            Remove all cdrom and task sources
   update           Update APT caches
                    (Runs `hsh --initroot-only` if `--hsh-apt-config` is given.)
-  test [task] <id> [pkg1 ...] Install all packages (except *-devel and *-debuginfo) from task <id>
+  test [task] <id> [pkg1 ...] Install all packages (except *-devel, *-checkinstall and *-debuginfo) from task <id>
                    (Uses hasher(7) if `--hsh-apt-config` is given.)
                    You can optional specify package(s) to test.
   test [task] '' pkg1 ... Install the packages (without modifying APT repos)
@@ -251,7 +251,7 @@ sub get_task_content {
 
         die "Task $task is unknown or still building" if ! task_exists( $task );
 
-	open P, '-|', "curl $proxy -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|debuginfo)\$' | sort -u";
+	open P, '-|', "curl $proxy -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|checkinstall|debuginfo)\$' | sort -u";
 	@out = <P>;
 	close P;
 	return @out;
