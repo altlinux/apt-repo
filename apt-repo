@@ -430,7 +430,7 @@ sub get_url {
 	}
 
 	# URL
-	if( $repo =~ /^(http|ftp|rsync|file|copy|cdrom):\// ) {
+	if( $repo =~ /^(http|https|ftp|rsync|file|copy|cdrom):\// ) {
 		my $u = 'rpm ' . $repo;
 		my $component = $c_branch;
                 my @repos = ();
