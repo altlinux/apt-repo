@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 # apt-repo -- Manipulate APT repository list
-# $Id: apt-repo,v 1.3.14 2020-11-08 17:19:00 cas Exp $
 
 # Copyright 2011-2016,2019,2020 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
