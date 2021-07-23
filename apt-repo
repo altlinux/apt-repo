@@ -79,7 +79,7 @@ if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
     # $1 is a string quoted for the shell (with quotation marks around it).
     # Therefore we rely on shell itself to print it cleanly:
     $conf_main = `echo -nE $1`;
-    # Invalidate the default because we want consistent values from `apt-config`: 
+    # Invalidate the default because we want consistent values from `apt-config`:
     $conf_list = '';
     if ( `apt-config shell DIR Dir::Etc::sourceparts/d` =~ /^DIR=(.*)$/ ) {
         $conf_list = `echo -nE $1` . "*.list";
@@ -501,7 +501,7 @@ sub add_repo {
             chomp;
             # Check active ones
             if( /^\Q$u\E$/ or /^\Q$unew\E$/ ) {
-                # This source is active 
+                # This source is active
                 $a_found = 1;
                 last;
             }
@@ -626,7 +626,7 @@ sub rm_repo {
             chomp;
             # Check active
             if( /^\Q$u\E$/ or /^\Q$unew\E$/ ) {
-                # This source is active 
+                # This source is active
                 $a_found = 1;
                 last;
             }
@@ -791,7 +791,7 @@ sub test_task {
 # Exiting functions
 show_repo( @ARGV ) if $cmd eq 'list';
 show_repo( 'list', '-a' ) if $cmd eq '-a';
-show_usage() if $cmd =~ /-(h|-help)$/ or scalar @ARGV == 0; 
+show_usage() if $cmd =~ /-(h|-help)$/ or scalar @ARGV == 0;
 show_version() if $cmd =~ /-(v|-version)$/;
 clear_repo( @ARGV ) if $cmd =~ /^clea[rn]$/;
 set_repo( @ARGV ) if $cmd eq 'set';
