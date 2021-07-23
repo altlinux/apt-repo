@@ -65,7 +65,7 @@ if ( defined $ENV{APT_CONFIG} ) {
     # because we want to debug how children see the environment variable.
     warn 'Info: Will try to read a non-system APT_CONFIG=' . `echo -nE "\$APT_CONFIG"`;
     if ( $ENV{APT_CONFIG} =~ /^~/ ) {
-	warn 'Warning: Your APT_CONFIG begins with ~, but no tilde expansion will take place';
+        warn 'Warning: Your APT_CONFIG begins with ~, but no tilde expansion will take place';
     }
 }
 # If APT is missing in the system, we fallback to the common defaults above.
@@ -82,44 +82,44 @@ if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
     # Invalidate the default because we want consistent values from `apt-config`: 
     $conf_list = '';
     if ( `apt-config shell DIR Dir::Etc::sourceparts/d` =~ /^DIR=(.*)$/ ) {
-	$conf_list = `echo -nE $1` . "*.list";
+        $conf_list = `echo -nE $1` . "*.list";
     } else {
-	warn "Warning: Getting Dir::Etc::sourceparts/d from `apt-config` went wrong; falling back to '$conf_list' instead."
+        warn "Warning: Getting Dir::Etc::sourceparts/d from `apt-config` went wrong; falling back to '$conf_list' instead."
     }
 } else {
     warn "Warning: Getting Dir::Etc::sourcelist/f from `apt-config` went wrong; falling back to '$conf_main' instead."
 }
 
 my %branches  = (
-	'4.0' => [ "$repo_base/4.0/branch", "updates", "classic" ],
-	'4.1' => [ "$repo_base/4.1/branch", "updates", "classic" ],
-	'5.0' => [ "$repo_base/5.0/branch", "updates", "classic" ],
-	'p5'  => [ "$repo_base/p5/branch",  "updates", "classic" ],
-	'5.1' => [ "$repo_base/5.1/branch", "updates", "classic" ],
-	'p6'  => [ "$repo_base/p6/branch",  "updates", "classic" ],
-	't6'  => [ "$repo_base/t6/branch",  "updates", "classic" ],
-	'c6'  => [ "$repo_base/c6/branch",  "updates", "classic" ],
-	'p7'  => [ "$repo_base/p7/branch",  "updates", "classic" ],
-	't7'  => [ "$repo_base/t7/branch",  "updates", "classic" ],
-	'c7'  => [ "$repo_base/c7/branch",  "updates", "classic" ],
-	'p8'  => [ "$repo_base/p8/branch",  "updates", "classic" ],
-	'c8'  => [ "http://update.altsp.su/pub/distributions/ALTLinux/c8/branch", "cert8", "classic" ],
-	'c8.1' => [ "$repo_base/c8.1/branch",  "updates", "classic" ],
-	'p9'  => [ "$repo_base/p9/branch",  "p9", "classic" ],
-	'p10'  => [ "$repo_base/p10/branch",  "p10", "classic" ],
-	'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
-	'Sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
-	'autoimports.p7' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p7", "", "autoimports" ],
-	'autoimports.p8' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p8", "", "autoimports" ],
-	'autoimports.p9' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p9", "", "autoimports" ],
-	'autoimports.sisyphus' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/Sisyphus", "", "autoimports" ],
-	'altlinuxclub.4.0' => [ "http://altlinuxclub.ru/repo/Repo_4/",  "", "hasher" ],
-	'altlinuxclub.p5'  => [ "http://altlinuxclub.ru/repo/Repo_P5/", "", "hasher" ],
-	'altlinuxclub.p6'  => [ "http://altlinuxclub.ru/repo/Repo_P6/", "", "hasher" ],
-	'altlinuxclub.p7'  => [ "http://altlinuxclub.ru/repo/Repo_P7/", "", "hasher" ],
-	'altlinuxclub.p8'  => [ "http://altlinuxclub.ru/repo/Repo_P8/", "", "hasher" ],
-	'altlinuxclub.p9'  => [ "http://altlinuxclub.ru/repo/Repo_P9/", "", "hasher" ],
-	'altlinuxclub.sisyphus' => [ "http://altlinuxclub.ru/repo/repo_s/",  "", "hasher" ]
+    '4.0' => [ "$repo_base/4.0/branch", "updates", "classic" ],
+    '4.1' => [ "$repo_base/4.1/branch", "updates", "classic" ],
+    '5.0' => [ "$repo_base/5.0/branch", "updates", "classic" ],
+    'p5'  => [ "$repo_base/p5/branch",  "updates", "classic" ],
+    '5.1' => [ "$repo_base/5.1/branch", "updates", "classic" ],
+    'p6'  => [ "$repo_base/p6/branch",  "updates", "classic" ],
+    't6'  => [ "$repo_base/t6/branch",  "updates", "classic" ],
+    'c6'  => [ "$repo_base/c6/branch",  "updates", "classic" ],
+    'p7'  => [ "$repo_base/p7/branch",  "updates", "classic" ],
+    't7'  => [ "$repo_base/t7/branch",  "updates", "classic" ],
+    'c7'  => [ "$repo_base/c7/branch",  "updates", "classic" ],
+    'p8'  => [ "$repo_base/p8/branch",  "updates", "classic" ],
+    'c8'  => [ "http://update.altsp.su/pub/distributions/ALTLinux/c8/branch", "cert8", "classic" ],
+    'c8.1' => [ "$repo_base/c8.1/branch",  "updates", "classic" ],
+    'p9'  => [ "$repo_base/p9/branch",  "p9", "classic" ],
+    'p10'  => [ "$repo_base/p10/branch",  "p10", "classic" ],
+    'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
+    'Sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
+    'autoimports.p7' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p7", "", "autoimports" ],
+    'autoimports.p8' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p8", "", "autoimports" ],
+    'autoimports.p9' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p9", "", "autoimports" ],
+    'autoimports.sisyphus' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/Sisyphus", "", "autoimports" ],
+    'altlinuxclub.4.0' => [ "http://altlinuxclub.ru/repo/Repo_4/",  "", "hasher" ],
+    'altlinuxclub.p5'  => [ "http://altlinuxclub.ru/repo/Repo_P5/", "", "hasher" ],
+    'altlinuxclub.p6'  => [ "http://altlinuxclub.ru/repo/Repo_P6/", "", "hasher" ],
+    'altlinuxclub.p7'  => [ "http://altlinuxclub.ru/repo/Repo_P7/", "", "hasher" ],
+    'altlinuxclub.p8'  => [ "http://altlinuxclub.ru/repo/Repo_P8/", "", "hasher" ],
+    'altlinuxclub.p9'  => [ "http://altlinuxclub.ru/repo/Repo_P9/", "", "hasher" ],
+    'altlinuxclub.sisyphus' => [ "http://altlinuxclub.ru/repo/repo_s/",  "", "hasher" ]
 );
 
 my @archiving_branches = (
@@ -136,12 +136,12 @@ sub get_proxy {
     my @res=`apt-config dump | grep -i "https\\?::proxy"`;
 
     if (scalar @res > 1) {
-	print "Too many proxy found. You should check the apt's configuration.";
+        print "Too many proxy found. You should check the apt's configuration.";
     }
 
     if ( defined $res[0] and $res[0] =~ /.*https?::proxy "(.*)";/i ) {
-	#print "$1\n";
-	return "--proxy $1";
+        #print "$1\n";
+        return "--proxy $1";
     }
 
     return "";
@@ -149,20 +149,20 @@ sub get_proxy {
 
 # Check Arepo ignoring
 sub check_ignore_arepo {
-	open( my $file, "<", "/etc/sysconfig/apt-repo" ) or return 1;
-	while( my $l = <$file> ) {
-		if( $l =~ /^AREPO\s*=\s*NO/ ) {
-			close( $file );
-			return 0;
-		}
-	}
-	close( $file );
-	return 1;
+    open( my $file, "<", "/etc/sysconfig/apt-repo" ) or return 1;
+    while( my $l = <$file> ) {
+        if( $l =~ /^AREPO\s*=\s*NO/ ) {
+            close( $file );
+            return 0;
+        }
+    }
+    close( $file );
+    return 1;
 }
 
 # Show usage information
 sub show_usage {
-	print <<"HELP";
+    print <<"HELP";
 Usage: apt-repo [--hsh-apt-config=FILE] [--dry-run] COMMAND SOURCE
 Manipulate APT repository list.
 
@@ -198,366 +198,366 @@ If --dry-run is defined in command line changes only shown, is not performed.
 If AREPO=NO is uncommented in /etc/sysconfig/apt-repo all additional operations
 ignore Arepo sources.
 HELP
-	exit 0;
+    exit 0;
 }
 
 # Show version
 sub show_version {
-	print "$VERSION\n";
-	exit 0;
+    print "$VERSION\n";
+    exit 0;
 }
 
 # Return array of file names with sources
 sub get_source_files {
-	my $dir;
-	my @files = ();
+    my $dir;
+    my @files = ();
 
-	# Build files list
-	push @files, $conf_main if -e $conf_main;
-	$dir = substr( $conf_list, 0, -6 );
-	opendir( DIR, substr( $conf_list, 0, -6 ) );
-	foreach my $name (sort readdir( DIR )) {
-		push @files, $dir . $name if $name =~ /\.list$/;
-	}
-	closedir( DIR );
-	return @files;
+    # Build files list
+    push @files, $conf_main if -e $conf_main;
+    $dir = substr( $conf_list, 0, -6 );
+    opendir( DIR, substr( $conf_list, 0, -6 ) );
+    foreach my $name (sort readdir( DIR )) {
+        push @files, $dir . $name if $name =~ /\.list$/;
+    }
+    closedir( DIR );
+    return @files;
 }
 
 # Return list of repositories as text
 sub get_repos {
-	my $all = shift;
-	my @output = ();
-	my $name;
+    my $all = shift;
+    my @output = ();
+    my $name;
 
-	# Iterate through @files
-	foreach $name ( get_source_files() ) {
-		open(my $file, "<", $name) or warn "Can't open file '$name'";
-		while( my $l = <$file> ) {
-			# Show all active repositories
-			push( @output, $l ) if $l =~ /^[[:space:]]*[^[:space:]#]+/;
-			# On -a show all available commented repositories
-			push( @output, $l ) if defined $all and $all =~ /^-a$/ and $l =~ /^[[:space:]]*#[[:space:]]*$type(-src|-dir)? /;
-		}
-		close( $file );
-	}
-	return @output;
+    # Iterate through @files
+    foreach $name ( get_source_files() ) {
+        open(my $file, "<", $name) or warn "Can't open file '$name'";
+        while( my $l = <$file> ) {
+            # Show all active repositories
+            push( @output, $l ) if $l =~ /^[[:space:]]*[^[:space:]#]+/;
+            # On -a show all available commented repositories
+            push( @output, $l ) if defined $all and $all =~ /^-a$/ and $l =~ /^[[:space:]]*#[[:space:]]*$type(-src|-dir)? /;
+        }
+        close( $file );
+    }
+    return @output;
 }
 
 # Get package list for task
 sub get_task_content {
-	my $task = shift;
-	my @out = ();
+    my $task = shift;
+    my @out = ();
 
-	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
+    die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
-        die "Task $task is unknown or still building" if ! task_exists( $task );
+    die "Task $task is unknown or still building" if ! task_exists( $task );
 
-	open P, '-|', "curl $proxy -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|checkinstall|debuginfo)\$' | sort -u";
-	@out = <P>;
-	close P;
-	return @out;
+    open P, '-|', "curl $proxy -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|checkinstall|debuginfo)\$' | sort -u";
+    @out = <P>;
+    close P;
+    return @out;
 }
 
 # Get status of task
 sub task_exists {
-        my $task = shift;
-        my @out = ();
+    my $task = shift;
+    my @out = ();
 
-        open P, '-|', "curl $proxy -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/add-bin";
-        @out = <P>;
-        close P;
-        return ( (pop @out) eq "200" and (scalar @out) != 0);
+    open P, '-|', "curl $proxy -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/add-bin";
+    @out = <P>;
+    close P;
+    return ( (pop @out) eq "200" and (scalar @out) != 0);
 }
 
 # Get status of arepo for task
 sub task_has_arepo {
-	my $task = shift;
-	my @out = ();
+    my $task = shift;
+    my @out = ();
 
-	die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
+    die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
-	open P, '-|', "curl $proxy -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
-	@out = <P>;
-	close P;
-	return ( (pop @out) eq "200" and (scalar @out) != 0);
+    open P, '-|', "curl $proxy -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
+    @out = <P>;
+    close P;
+    return ( (pop @out) eq "200" and (scalar @out) != 0);
 }
 
 # Show repositories
 sub show_repo {
-	shift;
-	my $all = shift;
+    shift;
+    my $all = shift;
 
-	# List for task packages by task number or canonical form `task <number>`
-	if( defined $all and $all =~ /^(\d+|task)$/ ) {
-		$all = shift if $all =~ /^task$/;
-		print join( "",get_task_content( $all ) );
-	} else {
-		print get_repos( $all );
-	}
+    # List for task packages by task number or canonical form `task <number>`
+    if( defined $all and $all =~ /^(\d+|task)$/ ) {
+        $all = shift if $all =~ /^task$/;
+        print join( "",get_task_content( $all ) );
+    } else {
+        print get_repos( $all );
+    }
 
-	exit 0;
+    exit 0;
 }
 
 # Convert source to new format to show last the dir in apt-get output
 sub new_format {
-	my $source = shift;
-        my @s = split ' ', $source;
-        my $i = 1;
-        my $path_str;
-        my @path;
-        my $part;
+    my $source = shift;
+    my @s = split ' ', $source;
+    my $i = 1;
+    my $path_str;
+    my @path;
+    my $part;
 
-        # move two last path components to architecture
-        $i++ if $s[$i] =~ /^\[/;
+    # move two last path components to architecture
+    $i++ if $s[$i] =~ /^\[/;
 
-        # Set new format only URL contains at least 3 parts
-        $path_str = $s[$i];
-        $path_str =~ s/^[a-z]+:\/\///;
-        @path = split '/', $path_str;
+    # Set new format only URL contains at least 3 parts
+    $path_str = $s[$i];
+    $path_str =~ s/^[a-z]+:\/\///;
+    @path = split '/', $path_str;
 
-        if( scalar @path > $new_format_parts ) {
-            if( $new_format_parts == 3 ) {
-                $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+\/[^\/]+)\/?/${1}/;
-                $part = $2;
-            } else {
-                $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+)\/?/${1}/;
-                $part = $2;
-            }
-            if( defined $part and $part ne '') {
-                $s[$i+1] = $part . '/' . $s[$i+1];
-            }
+    if( scalar @path > $new_format_parts ) {
+        if( $new_format_parts == 3 ) {
+            $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+\/[^\/]+)\/?/${1}/;
+            $part = $2;
+        } else {
+            $s[$i] =~ s/(.*)\/([^\/]+\/[^\/]+)\/?/${1}/;
+            $part = $2;
         }
+        if( defined $part and $part ne '') {
+            $s[$i+1] = $part . '/' . $s[$i+1];
+        }
+    }
 
-        return join( ' ', @s );
+    return join( ' ', @s );
 }
 
 # Determine repository URL
 sub get_url {
-	my $repo   = shift;
-	my $object = shift;
-	my @extra  = @_;
-	my $u = '';
-	my $k;
-	my @branch_source;
-        my $repo_name;
-        my $branch_archive = '';
+    my $repo   = shift;
+    my $object = shift;
+    my @extra  = @_;
+    my $u = '';
+    my $k;
+    my @branch_source;
+    my $repo_name;
+    my $branch_archive = '';
 
-	defined $repo or die "Unknown source. See `man apt-repo` for details.";
-	# Quick forms: known branch name or number for task
-	if( exists $branches{ $repo } ) {
-                unshift( @extra, $object );
-		$object = $repo;
-		$repo = 'branch';
-	}
+    defined $repo or die "Unknown source. See `man apt-repo` for details.";
+    # Quick forms: known branch name or number for task
+    if( exists $branches{ $repo } ) {
+        unshift( @extra, $object );
+        $object = $repo;
+        $repo = 'branch';
+    }
 
-	if( $repo =~ /^[0-9]+$/ ) {
-		$object = $repo;		
-		$repo = 'task';
-	}
+    if( $repo =~ /^[0-9]+$/ ) {
+        $object = $repo;		
+        $repo = 'task';
+    }
 
-	# Branch 	
-	if( $repo eq 'branch' ) {
-		# Branch list
-		if ( not defined $object )  {
-			# Show all available branch names
-			foreach $k (sort keys %branches) {
-				print $k . "\n";
-			}
-			exit 0;
-		}
+    # Branch 	
+    if( $repo eq 'branch' ) {
+        # Branch list
+        if ( not defined $object )  {
+            # Show all available branch names
+            foreach $k (sort keys %branches) {
+                print $k . "\n";
+            }
+            exit 0;
+        }
 
-		# URL for branch
-		if( exists $branches{ $object } ) {
-			my $key = '';
-			my $farch = $arch;
-			my $altlinuxclub = 0;
-			my $autoimports  = 0;
-			my $url = $branches{ $object }[0];
+        # URL for branch
+        if( exists $branches{ $object } ) {
+            my $key = '';
+            my $farch = $arch;
+            my $altlinuxclub = 0;
+            my $autoimports  = 0;
+            my $url = $branches{ $object }[0];
 
-                        # Check for archive
-                        $branch_archive = $extra[0] if scalar(@extra) > 0 and defined $extra[0];
-                        if( $branch_archive ne '' ) {
-                            die "Repository $object has no archive" if ! grep( /^$object$/, @archiving_branches );
-                            if( $branch_archive =~ /^\d{8}$/ ) {
-                                $branch_archive =~ s/^(\d{4})(\d{2})(\d{2})/$1\/$2\/$3/;
-                            }
-                            if( $branch_archive =~ /^\d{4}\/\d{2}\/\d{2}$/ ) {
-                                $url = $repo_archive_base . $object . '/date/' . $branch_archive;
-                                $new_format_parts = 3;
-                            } else {
-                                die "Archive of repository should be defined as YYYYMMDD or YYYY/MM/DD";
-                            }
-                        }
+            # Check for archive
+            $branch_archive = $extra[0] if scalar(@extra) > 0 and defined $extra[0];
+            if( $branch_archive ne '' ) {
+                die "Repository $object has no archive" if ! grep( /^$object$/, @archiving_branches );
+                if( $branch_archive =~ /^\d{8}$/ ) {
+                    $branch_archive =~ s/^(\d{4})(\d{2})(\d{2})/$1\/$2\/$3/;
+                }
+                if( $branch_archive =~ /^\d{4}\/\d{2}\/\d{2}$/ ) {
+                    $url = $repo_archive_base . $object . '/date/' . $branch_archive;
+                    $new_format_parts = 3;
+                } else {
+                    die "Archive of repository should be defined as YYYYMMDD or YYYY/MM/DD";
+                }
+            }
 
-			$altlinuxclub = 1 if $url =~ /^http\:\/\/altlinuxclub\.ru/;
-			$autoimports  = 1 if $url =~ /\/ALTLinux\/autoimports\//;
+            $altlinuxclub = 1 if $url =~ /^http\:\/\/altlinuxclub\.ru/;
+            $autoimports  = 1 if $url =~ /\/ALTLinux\/autoimports\//;
 
-			# Hack $arch for altlinuxclub.ru
-			$farch = 'i686' if $altlinuxclub and $arch eq 'i586';
+            # Hack $arch for altlinuxclub.ru
+            $farch = 'i686' if $altlinuxclub and $arch eq 'i586';
 
-			if( $branches{ $object }[1] ne "" ) {
-				$key = '[' . $branches{ $object }[1] . '] ';
-			}
-			$u = 'rpm ' . $key . $url;
+            if( $branches{ $object }[1] ne "" ) {
+                $key = '[' . $branches{ $object }[1] . '] ';
+            }
+            $u = 'rpm ' . $key . $url;
 
-			# Sources list
-			@branch_source = ( $u . ' ' . $farch . ' ' . $branches{ $object }[2] );
-			push( @branch_source, $u . ' ' . $noarch . ' ' . $branches{ $object }[2] ) if not $altlinuxclub;
+            # Sources list
+            @branch_source = ( $u . ' ' . $farch . ' ' . $branches{ $object }[2] );
+            push( @branch_source, $u . ' ' . $noarch . ' ' . $branches{ $object }[2] ) if not $altlinuxclub;
 
-			# For x86_64 add Arepo 2.0 source
-			if( $use_arepo and $farch eq 'x86_64' and not $altlinuxclub and not $autoimports ) {
-				push( @branch_source, $u . ' x86_64-i586 ' . $branches{ $object }[2] );
-			}
-		} else {
-			print "Unknown branch name '$object'\n";
-			exit 1;
-		}
-		#print join("\n", @branch_source), "\n";
-		return @branch_source;
+            # For x86_64 add Arepo 2.0 source
+            if( $use_arepo and $farch eq 'x86_64' and not $altlinuxclub and not $autoimports ) {
+                push( @branch_source, $u . ' x86_64-i586 ' . $branches{ $object }[2] );
+            }
+        } else {
+            print "Unknown branch name '$object'\n";
+            exit 1;
+        }
+        #print join("\n", @branch_source), "\n";
+        return @branch_source;
 
-	}
+    }
 
-	# Task
-	if( $repo eq 'task' ) {
-		if( not defined $object ) {
-			print "Task number is missed.\n";
-			exit 1;
-		}
-		my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
-		if( $use_arepo and $arch eq 'x86_64' and ( $ARGV[0] eq 'rm' or task_has_arepo( $object ) ) ) {
-			# Arepo source for x86_64
-			push @ret, 'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task;
-		}
-		return @ret;
-	}
+    # Task
+    if( $repo eq 'task' ) {
+        if( not defined $object ) {
+            print "Task number is missed.\n";
+            exit 1;
+        }
+        my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
+        if( $use_arepo and $arch eq 'x86_64' and ( $ARGV[0] eq 'rm' or task_has_arepo( $object ) ) ) {
+            # Arepo source for x86_64
+            push @ret, 'rpm ' . $repo_task . $object . '/ x86_64-i586 ' . $c_task;
+        }
+        return @ret;
+    }
 
-	# URL
-	if( $repo =~ /^(http|https|ftp|rsync|file|copy|cdrom):\// ) {
-		my $u = 'rpm ' . $repo;
-		my $component = $c_branch;
-                my @repos = ();
-                my $path;
+    # URL
+    if( $repo =~ /^(http|https|ftp|rsync|file|copy|cdrom):\// ) {
+        my $u = 'rpm ' . $repo;
+        my $component = $c_branch;
+        my @repos = ();
+        my $path;
 
-		if( defined $object ) {
-			# Architecture is defined
-			return ( $u . ' ' . $object . ' ' . join( ' ', @extra ) );
-		} else {
-			# Mirror
-                        push( @repos, $u . ' ' . $arch . ' ' . $component );
-                        if( $repo =~ /^file:\// ) {
-                            $path = $repo;
-                            $path =~ s/^file://;
-                            $path .= '/x86_64-i586';
-                            push( @repos, $u . ' x86_64-i586  ' . $component ) if -d $path and $use_arepo;
-                        }
-                        push( @repos, $u . ' ' . $noarch . ' ' . $component );
-			return @repos;
-		}
-	}
+        if( defined $object ) {
+            # Architecture is defined
+            return ( $u . ' ' . $object . ' ' . join( ' ', @extra ) );
+        } else {
+            # Mirror
+            push( @repos, $u . ' ' . $arch . ' ' . $component );
+            if( $repo =~ /^file:\// ) {
+                $path = $repo;
+                $path =~ s/^file://;
+                $path .= '/x86_64-i586';
+                push( @repos, $u . ' x86_64-i586  ' . $component ) if -d $path and $use_arepo;
+            }
+            push( @repos, $u . ' ' . $noarch . ' ' . $component );
+            return @repos;
+        }
+    }
 
-	# Absolute path for hasher repository
-	if( $repo =~ /^\// ) {
-		return ( 'rpm file://' . $repo . ' ' . $arch . ' hasher' );
-	}
+    # Absolute path for hasher repository
+    if( $repo =~ /^\// ) {
+        return ( 'rpm file://' . $repo . ' ' . $arch . ' hasher' );
+    }
 
-	# In format of sources.list(5)
-	if( $repo =~ /^$type(-src|-dir)?\b/ ) {
-		if( defined $object ) {
-			return ( $repo . ' ' . $object . ' ' . join( ' ', @extra ) );
-		} else {
-			return ( $repo );
-		}
-	}
+    # In format of sources.list(5)
+    if( $repo =~ /^$type(-src|-dir)?\b/ ) {
+        if( defined $object ) {
+            return ( $repo . ' ' . $object . ' ' . join( ' ', @extra ) );
+        } else {
+            return ( $repo );
+        }
+    }
 
-	return ();
+    return ();
 }
 
 # Add repository to list
 sub add_repo {
-	shift;
-	my $repo   = shift;
-	my $object = shift;
-	my @comps  = @_;
-	my $a_found;
-	my $i_found;
-	my @c = ();
+    shift;
+    my $repo   = shift;
+    my $object = shift;
+    my @comps  = @_;
+    my $a_found;
+    my $i_found;
+    my @c = ();
 
-	my @urls = get_url( $repo, $object, @comps );
+    my @urls = get_url( $repo, $object, @comps );
 
-	if( scalar @urls == 0 ) {
-		print "Nothing to add: bad source format. See `man apt-repo` for details.\n";
-		exit 1;
-	}
+    if( scalar @urls == 0 ) {
+        print "Nothing to add: bad source format. See `man apt-repo` for details.\n";
+        exit 1;
+    }
 
-	foreach my $u ( @urls ) {
-		my $unew = new_format( $u );
-		$a_found = 0;
-		$i_found = 0;
+    foreach my $u ( @urls ) {
+        my $unew = new_format( $u );
+        $a_found = 0;
+        $i_found = 0;
 
-		#print "added $u\n";
+        #print "added $u\n";
 
-		# Lookup active ones
-		foreach( get_repos( '-a' ) ) {
-			chomp;
-			# Check active ones
-			if( /^\Q$u\E$/ or /^\Q$unew\E$/ ) {
-				# This source is active 
-				$a_found = 1;
-				last;
-			}
-			# Check commented ones
-			if( /^[[:space:]]*#[[:space:]]*\Q$u\E$/ or /^[[:space:]]*#[[:space:]]*\Q$unew\E$/ ) {
-				# This source is existing and commented
-				$i_found = 1;
-				last;
-			}
-		}
+        # Lookup active ones
+        foreach( get_repos( '-a' ) ) {
+            chomp;
+            # Check active ones
+            if( /^\Q$u\E$/ or /^\Q$unew\E$/ ) {
+                # This source is active 
+                $a_found = 1;
+                last;
+            }
+            # Check commented ones
+            if( /^[[:space:]]*#[[:space:]]*\Q$u\E$/ or /^[[:space:]]*#[[:space:]]*\Q$unew\E$/ ) {
+                # This source is existing and commented
+                $i_found = 1;
+                last;
+            }
+        }
 
-		#print "$a_found $i_found $u\n";
+        #print "$a_found $i_found $u\n";
 
-		# Process source
-		next if $a_found; # Source is active, nothing do
+        # Process source
+        next if $a_found; # Source is active, nothing do
 
-		if( $i_found ) {
-			my $ret_file;
+        if( $i_found ) {
+            my $ret_file;
             my $l0;
             my $l;
-			# Uncomment commented source
-			my $ur = quotemeta $u;
-			my $urnew = quotemeta $unew;
-			# Iterate through config files
-			foreach my $name ( get_source_files() ) {
-				open( FILE, "<", $name ); @c = ( <FILE> ); close FILE;
-				foreach ( @c ) {
+            # Uncomment commented source
+            my $ur = quotemeta $u;
+            my $urnew = quotemeta $unew;
+            # Iterate through config files
+            foreach my $name ( get_source_files() ) {
+                open( FILE, "<", $name ); @c = ( <FILE> ); close FILE;
+                foreach ( @c ) {
                     if( $dry_run ) {
                         $l = $_;
                         $l0 = $l;
-					    $l =~ s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
-					    $l =~ s/^[[:space:]]*#[[:space:]]*($urnew)$/${1}/;
+                        $l =~ s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
+                        $l =~ s/^[[:space:]]*#[[:space:]]*($urnew)$/${1}/;
                         if( $l0 ne $l ) {
                             print "$name:-$l0";
                             print "$name:+$l";
                         }
                     } else {
-					    s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
-					    s/^[[:space:]]*#[[:space:]]*($urnew)$/${1}/;
+                        s/^[[:space:]]*#[[:space:]]*($ur)$/${1}/;
+                        s/^[[:space:]]*#[[:space:]]*($urnew)$/${1}/;
                     }
-				}
-				if( ! $dry_run ) {
-					$ret_file = open( FILE, ">", $name );
-					if ( not defined $ret_file ) {
-						print "Unable to edit file $name. Possibly, permission denied. Exiting.\n";
-						exit 1;
-					}
-					if ( $ret_file != 0 ) {
-						print FILE @c;
-						close FILE;
-					}
-				}
-			}
-			next;
-		} else {
-			# Append to main sources list file
+                }
+                if( ! $dry_run ) {
+                    $ret_file = open( FILE, ">", $name );
+                    if ( not defined $ret_file ) {
+                        print "Unable to edit file $name. Possibly, permission denied. Exiting.\n";
+                        exit 1;
+                    }
+                    if ( $ret_file != 0 ) {
+                        print FILE @c;
+                        close FILE;
+                    }
+                }
+            }
+            next;
+        } else {
+            # Append to main sources list file
             if( $dry_run ) {
                 print "$conf_main:+$unew\n";
             } else {
@@ -565,88 +565,88 @@ sub add_repo {
                 print CONFIG $unew . "\n";
                 close CONFIG;
             }
-		}
-	}
+        }
+    }
 
-	exit 0 if ! $continues;
+    exit 0 if ! $continues;
 }
 
 # Remove repository from list
 sub rm_repo {
-	shift;
-	my $repo   = shift;
-	my $object = shift;
-	my @comps  = @_;
-	my $a_found;
-	my $i_found;
-	my @c = ();
+    shift;
+    my $repo   = shift;
+    my $object = shift;
+    my @comps  = @_;
+    my $a_found;
+    my $i_found;
+    my @c = ();
     my $branch_source;
 
-	my @urls;
+    my @urls;
 
-	if( defined $repo and $repo eq 'all' ) {
-		# Remove all active sources
-		@urls = get_repos();
+    if( defined $repo and $repo eq 'all' ) {
+        # Remove all active sources
+        @urls = get_repos();
 
-		# Remove repositories by specified type
-		if( defined $object ) {
-			$object =~ /^(branch|branches|task|tasks|cdrom|cdroms)$/ or die "Missing repository type for `apt-repo rm all <type>`";
-			@urls = grep( /[[:space:]]+classic$/, @urls ) if( $object =~ /^branch(es)?$/ );
-			@urls = grep( /[[:space:]]+task$/, @urls ) if( $object =~ /^task(s)?$/ );
-			@urls = grep( /^[[:space:]]*rpm[[:space:]]+cdrom:/, @urls ) if( $object =~ /^cdrom(s)?$/ );
-		}
+        # Remove repositories by specified type
+        if( defined $object ) {
+            $object =~ /^(branch|branches|task|tasks|cdrom|cdroms)$/ or die "Missing repository type for `apt-repo rm all <type>`";
+            @urls = grep( /[[:space:]]+classic$/, @urls ) if( $object =~ /^branch(es)?$/ );
+            @urls = grep( /[[:space:]]+task$/, @urls ) if( $object =~ /^task(s)?$/ );
+            @urls = grep( /^[[:space:]]*rpm[[:space:]]+cdrom:/, @urls ) if( $object =~ /^cdrom(s)?$/ );
+        }
 
-	} else {
-		@urls = get_url( $repo, $object, @comps );
-                # Add key [<branch_name>] in addition to [updates] for branch source
-                if( exists $branches{ $repo } ) {
-                    $object = $repo;
-                    $repo = 'branch';
+    } else {
+        @urls = get_url( $repo, $object, @comps );
+        # Add key [<branch_name>] in addition to [updates] for branch source
+        if( exists $branches{ $repo } ) {
+            $object = $repo;
+            $repo = 'branch';
+        }
+        if( $repo eq 'branch' ) {
+            foreach( @urls ) {
+                if( / \[updates\] / ) {
+                    $branch_source = $_;
+                    $branch_source =~ s/\[updates\]/[\Q$object\E]/;
+                    push( @urls, $branch_source );
                 }
-                if( $repo eq 'branch' ) {
-                    foreach( @urls ) {
-                        if( / \[updates\] / ) {
-                            $branch_source = $_;
-                            $branch_source =~ s/\[updates\]/[\Q$object\E]/;
-                            push( @urls, $branch_source );
-                        }
-                    }
-                }
-	}
+            }
+        }
+    }
 
-	foreach my $u ( @urls ) {
-		my $unew = new_format( $u );
-		$a_found = 0;
-		$i_found = 0;
+    foreach my $u ( @urls ) {
+        my $unew = new_format( $u );
+        $a_found = 0;
+        $i_found = 0;
 
-		chomp $u;
+        chomp $u;
 
-		# Lookup active
-		foreach( get_repos() ) {
-			chomp;
-			# Check active
-			if( /^\Q$u\E$/ or /^\Q$unew\E$/ ) {
-				# This source is active 
-				$a_found = 1;
-				last;
-			}
-		}
+        # Lookup active
+        foreach( get_repos() ) {
+            chomp;
+            # Check active
+            if( /^\Q$u\E$/ or /^\Q$unew\E$/ ) {
+                # This source is active 
+                $a_found = 1;
+                last;
+            }
+        }
 
-		#print "$a_found $u\n";
+        #print "$a_found $u\n";
 
-		# Remove from $conf_main, comment in other files
-		if( $a_found ) {
-			my $ret_file;
-			my @cc;
+        # Remove from $conf_main, comment in other files
+        if( $a_found ) {
+            my $ret_file;
+            my @cc;
             my $l0;
             my $l;
-			$u = quotemeta $u;
-			$unew = quotemeta $unew;
-			# Iterate through config files
-			open( FILE, "<", $conf_main ); @c = ( <FILE> ); close FILE;
+            $u = quotemeta $u;
+            $unew = quotemeta $unew;
+            # Iterate through config files
+            open( FILE, "<", $conf_main ); @c = ( <FILE> ); close FILE;
             if( ! $dry_run ) {
-			    @cc = grep {!/^[[:space:]]*$u$/} @c;
-			    @cc = grep {!/^[[:space:]]*$unew$/} @cc;
+                @cc = grep {!/^[[:space:]]*$u$/} @c;
+                @cc = grep {!/^[[:space:]]*$unew$/} @cc;
                 $ret_file = open( FILE, ">", $conf_main );
                 if ( not defined $ret_file ) {
                     print "Unable to edit file $conf_main. Possibly, permission denied. Exiting.\n";
@@ -657,53 +657,53 @@ sub rm_repo {
                     close FILE;
                 }
             } else {
-				my @ca = ();
-			    @cc = grep {/^[[:space:]]*$u$/} @c;
-				push( @ca, @cc ) if @cc;
-			    @cc = grep {/^[[:space:]]*$unew$/} @c;
-				push( @ca, @cc ) if @cc;
+                my @ca = ();
+                @cc = grep {/^[[:space:]]*$u$/} @c;
+                push( @ca, @cc ) if @cc;
+                @cc = grep {/^[[:space:]]*$unew$/} @c;
+                push( @ca, @cc ) if @cc;
                 foreach( @ca ) {
                     print "$conf_main:-$_";
                 }
             }
-			# Comment in config files
-			foreach my $name ( get_source_files() ) {
-				open( FILE, "<", $name ); @c = ( <FILE> ); close FILE;
-				foreach ( @c ) {
+            # Comment in config files
+            foreach my $name ( get_source_files() ) {
+                open( FILE, "<", $name ); @c = ( <FILE> ); close FILE;
+                foreach ( @c ) {
                     if( $dry_run ) {
                         $l = $_;
                         $l0 = $l;
-					    $l =~ s/^[[:space:]]*($u)$/#${1}/;
-					    $l =~ s/^[[:space:]]*($unew)$/#${1}/;
+                        $l =~ s/^[[:space:]]*($u)$/#${1}/;
+                        $l =~ s/^[[:space:]]*($unew)$/#${1}/;
                         if( $l0 ne $l and $name ne $conf_main ) {
                             print "$name:-$l0";
                             print "$name:+$l";
                         }
                     } else {
-					    s/^[[:space:]]*($u)$/#${1}/;
-					    s/^[[:space:]]*($unew)$/#${1}/;
+                        s/^[[:space:]]*($u)$/#${1}/;
+                        s/^[[:space:]]*($unew)$/#${1}/;
                     }
-				}
-                if( ! $dry_run ) {
-				    open( FILE, ">", $name ) or next; print FILE @c; close FILE;
                 }
-			}
-		}
-	}
-	return 0;
+                if( ! $dry_run ) {
+                    open( FILE, ">", $name ) or next; print FILE @c; close FILE;
+                }
+            }
+        }
+    }
+    return 0;
 }
 
 # Remove all cdrom and task repositories
 sub clear_repo {
-	my @cmd;
+    my @cmd;
 
-	@cmd = qw(rm all cdroms);
-	rm_repo( @cmd );
+    @cmd = qw(rm all cdroms);
+    rm_repo( @cmd );
 
-	@cmd = qw(rm all tasks);
-	rm_repo( @cmd );
+    @cmd = qw(rm all tasks);
+    rm_repo( @cmd );
 
-	exit 0 if ! $continues;
+    exit 0 if ! $continues;
 }
 
 # Remove all and set new branch
@@ -724,19 +724,19 @@ sub set_repo {
 sub update_repo {
     my $error_code = 0;
     if (! $hsh ) {
-	$error_code = system 'apt-get update';
+        $error_code = system 'apt-get update';
     } else {
-	# Normally, hsh --initroot-only prepares an environment with rpm-build etc. (for building packages).
-	# Instead, here, we do as girar's install check does, which prepares a smaller minimal system:
-	# http://git.altlinux.org/people/ldv/packages/?p=girar.git;a=blob;f=gb/remote/gb-remote-check-install;h=e7823af17cdfc68369f5782a8cdbac18e581adb7;hb=1535653ca9923ea8cd228ae68b2ca7c1b80eba7e#l41
-	# This would allow us to reproduce the bugs that happen in girar's install check, like that one: https://bugzilla.altlinux.org/show_bug.cgi?id=31576 .
-	# TODO:
-	# The difference is that girar explicitly knows that target repo branch (like Sisyphus, p7, etc.), and hence is able to use an explicit altlinux-release-sisyphus package.
-	# We simply rely on the virtual package. (Which is not very nice, because it can install a different special package.)
-	$error_code = system "hsh --apt-config=\"\$APT_CONFIG\" --initroot-only --pkg-init-list=+altlinux-release --pkg-build-list=altlinux-release,basesystem";
+        # Normally, hsh --initroot-only prepares an environment with rpm-build etc. (for building packages).
+        # Instead, here, we do as girar's install check does, which prepares a smaller minimal system:
+        # http://git.altlinux.org/people/ldv/packages/?p=girar.git;a=blob;f=gb/remote/gb-remote-check-install;h=e7823af17cdfc68369f5782a8cdbac18e581adb7;hb=1535653ca9923ea8cd228ae68b2ca7c1b80eba7e#l41
+        # This would allow us to reproduce the bugs that happen in girar's install check, like that one: https://bugzilla.altlinux.org/show_bug.cgi?id=31576 .
+        # TODO:
+        # The difference is that girar explicitly knows that target repo branch (like Sisyphus, p7, etc.), and hence is able to use an explicit altlinux-release-sisyphus package.
+        # We simply rely on the virtual package. (Which is not very nice, because it can install a different special package.)
+        $error_code = system "hsh --apt-config=\"\$APT_CONFIG\" --initroot-only --pkg-init-list=+altlinux-release --pkg-build-list=altlinux-release,basesystem";
     }
     if ( $error_code ) {
-	warn 'Error: The "update" command has not completed successfully';
+        warn 'Error: The "update" command has not completed successfully';
     }
     exit $error_code if ! $continues;
     return !$error_code;
@@ -744,47 +744,47 @@ sub update_repo {
 
 # Test task
 sub test_task {
-	shift;
-	my $task = shift;
-	my @pkgs = ();
-	my $list = "";
+    shift;
+    my $task = shift;
+    my @pkgs = ();
+    my $list = "";
 
-	$task = shift if $task eq 'task';
+    $task = shift if $task eq 'task';
 
-	@pkgs = @_;
-	if ( scalar(@pkgs) == 0 ) {
-		@pkgs = get_task_content( $task );
-	}
+    @pkgs = @_;
+    if ( scalar(@pkgs) == 0 ) {
+        @pkgs = get_task_content( $task );
+    }
 
-	# Add source and update indices
-	$continues = 1;
-	if ( not $task eq '' ) {
-	    add_repo( ("add", "task", $task ) );
-	}
-	if ( update_repo() or ! $hsh ) {
-	    # `hsh --initroot-only` is particularly fragile,
-	    # so if we are using hsh and if the "update" command
-	    # hasn't completed successfully, we abort.
+    # Add source and update indices
+    $continues = 1;
+    if ( not $task eq '' ) {
+        add_repo( ("add", "task", $task ) );
+    }
+    if ( update_repo() or ! $hsh ) {
+        # `hsh --initroot-only` is particularly fragile,
+        # so if we are using hsh and if the "update" command
+        # hasn't completed successfully, we abort.
 
-	# Install all packages from task (except *-debuginfo)
-	chomp( @pkgs );
-	$list = join( " ", @pkgs );
+        # Install all packages from task (except *-debuginfo)
+        chomp( @pkgs );
+        $list = join( " ", @pkgs );
 
-	# Install packages from task repository
-	if (! $hsh ) {
-	    system "cd /var/empty/; apt-get install $list";
-	} else {
-	    system "cd /var/empty/; hsh-install $list";
-	}
+        # Install packages from task repository
+        if (! $hsh ) {
+            system "cd /var/empty/; apt-get install $list";
+        } else {
+            system "cd /var/empty/; hsh-install $list";
+        }
 
-	}
+    }
 
-	# Remove task source
-	if ( not $task eq '' ) {
-	    rm_repo( ("rm", "task", $task ) );
-	}
+    # Remove task source
+    if ( not $task eq '' ) {
+        rm_repo( ("rm", "task", $task ) );
+    }
 
-	exit 0;
+    exit 0;
 }
 
 # Process command line arguments
@@ -800,11 +800,11 @@ test_task( @ARGV ) if $cmd eq 'test';
 
 # Functions with return
 if( $cmd =~ /^(add|rm)$/ ) {
-	add_repo( @ARGV ) if $cmd eq 'add';
-	rm_repo( @ARGV ) if $cmd eq 'rm';
+    add_repo( @ARGV ) if $cmd eq 'add';
+    rm_repo( @ARGV ) if $cmd eq 'rm';
 } else {
-	print "Unknown command `$cmd`.\nRun `apt-repo --help` for supported commands.\n";
-	exit 1;
+    print "Unknown command `$cmd`.\nRun `apt-repo --help` for supported commands.\n";
+    exit 1;
 }
 
 __END__
