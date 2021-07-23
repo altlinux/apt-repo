@@ -106,6 +106,7 @@ my %branches  = (
 	'c8'  => [ "http://update.altsp.su/pub/distributions/ALTLinux/c8/branch", "cert8", "classic" ],
 	'c8.1' => [ "$repo_base/c8.1/branch",  "updates", "classic" ],
 	'p9'  => [ "$repo_base/p9/branch",  "p9", "classic" ],
+	'p10'  => [ "$repo_base/p10/branch",  "p10", "classic" ],
 	'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
 	'Sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
 	'autoimports.p7' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p7", "", "autoimports" ],
@@ -125,6 +126,7 @@ my @archiving_branches = (
     'p7',
     'p8',
     'p9',
+    'p10',
     't7',
     'sisyphus'
 );
