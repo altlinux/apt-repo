@@ -484,6 +484,13 @@ sub add_repo {
 
     my @urls = get_url( $repo, $object, @comps );
 
+    # For p10 set macro "%_priority_distbranch p10"
+    if( not $dry_run and ( $repo eq "p10" or $object eq "p10" ) ) {
+        open PRIORITY, '>', "/etc/rpm/macros.d/p10" or die "Can't open /etc/rpm/macros.d/p10: $!";
+        print PRIORITY "%_priority_distbranch p10\n";
+        close PRIORITY;
+    }
+
     if( scalar @urls == 0 ) {
         print "Nothing to add: bad source format. See `man apt-repo` for details.\n";
         exit 1;
