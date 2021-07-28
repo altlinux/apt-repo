@@ -578,6 +578,11 @@ sub add_repo {
     exit 0 if ! $continues;
 }
 
+# Remove disttag macro
+sub remove_disttag {
+    unlink( "/etc/rpm/macros.d/p10" ) if -e "/etc/rpm/macros.d/p10";
+}
+
 # Remove repository from list
 sub rm_repo {
     shift;
@@ -603,6 +608,9 @@ sub rm_repo {
             @urls = grep( /^[[:space:]]*rpm[[:space:]]+cdrom:/, @urls ) if( $object =~ /^cdrom(s)?$/ );
         }
 
+        # Remove disttag macro
+        remove_disttag();
+
     } else {
         @urls = get_url( $repo, $object, @comps );
         # Add key [<branch_name>] in addition to [updates] for branch source
@@ -618,6 +626,8 @@ sub rm_repo {
                     push( @urls, $branch_source );
                 }
             }
+            # Remove disttag macro
+            remove_disttag();
         }
     }
 
