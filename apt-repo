@@ -181,6 +181,8 @@ COMMANDS:
                    You can optional specify package(s) to test.
   test [task] '' pkg1 ... Install the packages (without modifying APT repos)
                    (Uses hasher(7) if `--hsh-apt-config` is given.)
+  upgrade [task [task...] Upgrade all packages by apt-get dist-upgrade.
+                   If task (one or more) is specified, upgrade is performed including this tasks.
   -h, --help       Show help and exit
   -v               Show version and exit
 
@@ -805,6 +807,33 @@ sub test_task {
     exit 0;
 }
 
+# Upgrade system including optional task repos
+sub upgrade {
+    shift;
+    my @tasks = @_;
+    my $error_code = 0;
+
+    $continues = 1;
+
+    # Add extra task repos
+    foreach my $task ( @tasks ) {
+        add_repo( ("add", "task", $task ) );
+    }
+
+    # Update indices
+    update_repo();
+
+    # Perform full upgrade
+    $error_code = system 'apt-get dist-upgrade';
+
+    # Remove extra task repos
+    foreach my $task ( @tasks ) {
+        rm_repo( ("rm", "task", $task ) );
+    }
+
+    exit $error_code;
+}
+
 # Process command line arguments
 # Exiting functions
 show_repo( @ARGV ) if $cmd eq 'list';
@@ -815,6 +844,7 @@ clear_repo( @ARGV ) if $cmd =~ /^clea[rn]$/;
 set_repo( @ARGV ) if $cmd eq 'set';
 update_repo() if $cmd eq 'update';
 test_task( @ARGV ) if $cmd eq 'test';
+upgrade( @ARGV ) if $cmd eq 'upgrade';
 
 # Functions with return
 if( $cmd =~ /^(add|rm)$/ ) {

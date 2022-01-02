@@ -2,14 +2,14 @@
 .\"
 .\" Man page for the apt-repo program.
 .\"
-.\" Copyright (c) 2011-2013,2019 Andrey Cherepanov <cas@altlinux.org>
+.\" Copyright (c) 2011-2022 Andrey Cherepanov <cas@altlinux.org>
 .\" Copyright (c) 2015 Ivan Zakharyaschev <imz@altlinux.org>
 .\"
 .\" This software is distributed under the GNU General Public License (GPL)
 .\" version 3 or later.
 .\"
 .Os Linux
-.Dd May 20, 2019
+.Dd January 2, 2022
 .ds volume-operating-system Linux
 .Dt apt\-repo 8
 .\"
@@ -43,6 +43,9 @@ update
 test
 .Op task
 .Ar id
+.Nm apt\-repo
+upgrade
+.Op Ar id
 .Nm apt\-repo
 .Op Fl h
 .Op Fl v
@@ -142,6 +145,10 @@ Install the given packages from the task repository specified by
 .Ar id .
 .It test [task] Ar '' Ar pkg1 Ar pkg2
 Install the given packages (without modifying APT repos).
+.It upgrade Op Ar id Op Ar id
+Upgrade all packages (including specified task(s) by 
+.Ar id 
+).
 .It Fl h Fl \-help
 Print usage information and quit.
 .It Fl v Fl \-version
