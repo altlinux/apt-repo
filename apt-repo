@@ -120,6 +120,7 @@ my %branches  = (
     'altlinuxclub.p7'  => [ "http://altlinuxclub.ru/repo/Repo_P7/", "", "hasher" ],
     'altlinuxclub.p8'  => [ "http://altlinuxclub.ru/repo/Repo_P8/", "", "hasher" ],
     'altlinuxclub.p9'  => [ "http://altlinuxclub.ru/repo/Repo_P9/", "", "hasher" ],
+    'altlinuxclub.p10' => [ "http://altlinuxclub.ru/repo/Repo_P10/", "", "hasher" ],
     'altlinuxclub.sisyphus' => [ "http://altlinuxclub.ru/repo/repo_s/",  "", "hasher" ]
 );
 
