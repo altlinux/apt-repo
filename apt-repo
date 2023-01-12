@@ -256,7 +256,7 @@ sub get_task_content {
 
     die "Task $task is unknown or still building" if ! task_exists( $task );
 
-    open P, '-|', "curl $proxy -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | egrep -v '\\-(devel.*|checkinstall|debuginfo)\$' | sort -u";
+    open P, '-|', "curl $proxy -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -E -v '\\-(devel.*|checkinstall|debuginfo)\$' | sort -u";
     @out = <P>;
     close P;
     return @out;
