@@ -2,7 +2,7 @@
 
 # apt-repo -- Manipulate APT repository list
 
-# Copyright 2011-2022 by Andrey Cherepanov (cas@altlinux.org)
+# Copyright 2011-2023 by Andrey Cherepanov (cas@altlinux.org)
 # Copyright 2015 by Ivan Zakharyaschev (imz@altlinux.org)
 # (imz: support for relying on apt-config and APT_CONFIG)
 # (imz: Support for local --hsh-apt-config=FILE together with hasher.)
@@ -14,7 +14,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.4.0';
+our $VERSION = '1.4.1';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
