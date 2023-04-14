@@ -256,7 +256,7 @@ sub get_task_content {
 
     die "Task $task is unknown or still building" if ! task_exists( $task );
 
-    open P, '-|', "curl $proxy -s http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -E -v '\\-(devel.*|checkinstall|debuginfo)\$' | sort -u";
+    open P, '-|', "curl $proxy -sL http://git.altlinux.org/tasks/$task/plan/add-bin | cut -f1 | grep -E -v '\\-(devel.*|checkinstall|debuginfo)\$' | sort -u";
     @out = <P>;
     close P;
     return @out;
@@ -267,7 +267,7 @@ sub task_exists {
     my $task = shift;
     my @out = ();
 
-    open P, '-|', "curl $proxy -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/add-bin";
+    open P, '-|', "curl $proxy -sL  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/add-bin";
     @out = <P>;
     close P;
     return ( (pop @out) eq "200" and (scalar @out) != 0);
@@ -280,7 +280,7 @@ sub task_has_arepo {
 
     die "Missing or wrong task number" if ! defined $task or ! $task=~ /^(\d+)$/;
 
-    open P, '-|', "curl $proxy -s  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
+    open P, '-|', "curl $proxy -sL  -w '%{http_code}' http://git.altlinux.org/tasks/$task/plan/arepo-add-x86_64-i586";
     @out = <P>;
     close P;
     return ( (pop @out) eq "200" and (scalar @out) != 0);
