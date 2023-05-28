@@ -413,8 +413,7 @@ sub get_url {
                 push( @branch_source, $u . ' x86_64-i586 ' . $branches{ $object }[2] );
             }
         } else {
-            print "Unknown branch name '$object'\n";
-            exit 1;
+            die "Unknown branch name '$object'\n";
         }
         #print join("\n", @branch_source), "\n";
         return @branch_source;
@@ -424,8 +423,7 @@ sub get_url {
     # Task
     if( $repo eq 'task' ) {
         if( not defined $object ) {
-            print "Task number is missed.\n";
-            exit 1;
+            die "Task number is missed.\n";
         }
         my @ret = ( 'rpm ' . $repo_task . $object . '/ ' . $arch . ' ' . $c_task );
         if( $use_arepo and $arch eq 'x86_64' and ( $ARGV[0] eq 'rm' or task_has_arepo( $object ) ) ) {
@@ -496,8 +494,7 @@ sub add_repo {
     }
 
     if( scalar @urls == 0 ) {
-        print "Nothing to add: bad source format. See `man apt-repo` for details.\n";
-        exit 1;
+        die "Nothing to add: bad source format. See `man apt-repo` for details.\n";
     }
 
     foreach my $u ( @urls ) {
@@ -557,8 +554,7 @@ sub add_repo {
                 if( ! $dry_run ) {
                     $ret_file = open( FILE, ">", $name );
                     if ( not defined $ret_file ) {
-                        print "Unable to edit file $name. Possibly, permission denied. Exiting.\n";
-                        exit 1;
+                        die "Unable to edit file $name. Possibly, permission denied. Exiting.\n";
                     }
                     if ( $ret_file != 0 ) {
                         print FILE @c;
@@ -670,7 +666,7 @@ sub rm_repo {
                 @cc = grep {!/^[[:space:]]*$unew$/} @cc;
                 $ret_file = open( FILE, ">", $conf_main );
                 if ( not defined $ret_file ) {
-                    print "Unable to edit file $conf_main. Possibly, permission denied. Exiting.\n";
+                    die "Unable to edit file $conf_main. Possibly, permission denied. Exiting.\n";
                     return 1;
                 }
                 if ( $ret_file != 0 ) {
@@ -852,8 +848,7 @@ if( $cmd =~ /^(add|rm)$/ ) {
     add_repo( @ARGV ) if $cmd eq 'add';
     rm_repo( @ARGV ) if $cmd eq 'rm';
 } else {
-    print "Unknown command `$cmd`.\nRun `apt-repo --help` for supported commands.\n";
-    exit 1;
+    die "Unknown command `$cmd`.\nRun `apt-repo --help` for supported commands.\n";
 }
 
 __END__
