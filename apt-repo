@@ -38,7 +38,7 @@ if( grep( /^--dry-run$/, @ARGV) ) {
 
 if ( scalar @ARGV > 0 and $ARGV[0] =~ /^--hsh-apt-config=(.*)$/ ) {
     # Printing is useful for debugging, too:
-    warn "Info: Will use hasher when appropriate (with --apt-config=$1).";
+    warn "Info: Will use hasher when appropriate (with --apt-config=$1).\n";
     $ENV{APT_CONFIG} = $1;
     $hsh = 1;
     shift;
@@ -63,9 +63,9 @@ my $conf_list = '/etc/apt/sources.list.d/*.list';
 if ( defined $ENV{APT_CONFIG} ) {
     # The following expression is intentionally crazily complex,
     # because we want to debug how children see the environment variable.
-    warn 'Info: Will try to read a non-system APT_CONFIG=' . `echo -nE "\$APT_CONFIG"`;
+    warn 'Info: Will try to read a non-system APT_CONFIG=' . `echo -nE "\$APT_CONFIG"` . '\n';
     if ( $ENV{APT_CONFIG} =~ /^~/ ) {
-        warn 'Warning: Your APT_CONFIG begins with ~, but no tilde expansion will take place';
+        warn 'Warning: Your APT_CONFIG begins with ~, but no tilde expansion will take place\n';
     }
 }
 # If APT is missing in the system, we fallback to the common defaults above.
@@ -84,10 +84,10 @@ if ( `apt-config shell FILE Dir::Etc::sourcelist/f` =~ /^FILE=(.*)$/ ) {
     if ( `apt-config shell DIR Dir::Etc::sourceparts/d` =~ /^DIR=(.*)$/ ) {
         $conf_list = `echo -nE $1` . "*.list";
     } else {
-        warn "Warning: Getting Dir::Etc::sourceparts/d from `apt-config` went wrong; falling back to '$conf_list' instead."
+        warn "Warning: Getting Dir::Etc::sourceparts/d from `apt-config` went wrong; falling back to '$conf_list' instead.\n"
     }
 } else {
-    warn "Warning: Getting Dir::Etc::sourcelist/f from `apt-config` went wrong; falling back to '$conf_main' instead."
+    warn "Warning: Getting Dir::Etc::sourcelist/f from `apt-config` went wrong; falling back to '$conf_main' instead.\n"
 }
 
 my %branches  = (
@@ -235,7 +235,7 @@ sub get_repos {
 
     # Iterate through @files
     foreach $name ( get_source_files() ) {
-        open(my $file, "<", $name) or warn "Can't open file '$name'";
+        open(my $file, "<", $name) or warn "Can't open file '$name'\n";
         while( my $l = <$file> ) {
             # Show all active repositories
             push( @output, $l ) if $l =~ /^[[:space:]]*[^[:space:]#]+/;
