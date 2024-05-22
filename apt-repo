@@ -14,7 +14,7 @@ use strict;
 use warnings;
 
 # Default parameters
-our $VERSION = '1.4.1';
+our $VERSION = '1.4.4';
 
 my $type     = 'rpm';
 my $c_branch = 'classic';
@@ -107,6 +107,7 @@ my %branches  = (
     'c8.1' => [ "$repo_base/c8.1/branch",  "updates", "classic" ],
     'p9'  => [ "$repo_base/p9/branch",  "p9", "classic" ],
     'p10'  => [ "$repo_base/p10/branch",  "p10", "classic" ],
+    'p11'  => [ "$repo_base/p11/branch",  "p11", "classic" ],
     'sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
     'Sisyphus' => [ "$repo_base/Sisyphus", "alt", "classic" ],
     'autoimports.p7' => [ "http://ftp.altlinux.ru/pub/distributions/ALTLinux/autoimports/p7", "", "autoimports" ],
@@ -483,15 +484,18 @@ sub add_repo {
     my $a_found;
     my $i_found;
     my @c = ();
+	my @priority_branches = ( "p10", "p11", "sisyphus" );
 
     my @urls = get_url( $repo, $object, @comps );
 
-    # For p10 set macro "%_priority_distbranch p10"
-    if( not $dry_run and ( $repo eq "p10" or ( defined($object) and $object eq "p10" ) ) ) {
-        open PRIORITY, '>', "/etc/rpm/macros.d/p10" or die "Can't open /etc/rpm/macros.d/p10: $!";
-        print PRIORITY "%_priority_distbranch p10\n";
-        close PRIORITY;
-    }
+    # Set %_priority_distbranch
+	foreach my $distbranch ( @priority_branches ) {
+		if( not $dry_run and ( $repo eq $distbranch or ( defined($object) and $object eq $distbranch ) ) ) {
+			open PRIORITY, '>', "/etc/rpm/macros.d/$distbranch" or die "Can't open /etc/rpm/macros.d/$distbranch: $!";
+			print PRIORITY "%_priority_distbranch $distbranch\n";
+			close PRIORITY;
+		}
+	}
 
     if( scalar @urls == 0 ) {
         die "Nothing to add: bad source format. See `man apt-repo` for details.\n";
