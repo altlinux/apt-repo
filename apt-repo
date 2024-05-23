@@ -491,7 +491,7 @@ sub add_repo {
     # Set %_priority_distbranch
 	foreach my $distbranch ( @priority_branches ) {
 		if( not $dry_run and ( $repo eq $distbranch or ( defined($object) and $object eq $distbranch ) ) ) {
-			open PRIORITY, '>', "/etc/rpm/macros.d/$distbranch" or die "Can't open /etc/rpm/macros.d/$distbranch: $!";
+			open PRIORITY, '>', "/etc/rpm/macros.d/priority_distbranch" or die "Can't open /etc/rpm/macros.d/priority_distbranch: $!";
 			print PRIORITY "%_priority_distbranch $distbranch\n";
 			close PRIORITY;
 		}
